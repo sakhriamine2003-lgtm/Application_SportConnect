@@ -21,7 +21,7 @@ class Login extends Controller
 
         if ($user === null || ! Hash::check($credentials['password'], $user->password)) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.',
+                'message' => 'Email ou mot de passe incorrect.',
             ], 401);
         }
 
