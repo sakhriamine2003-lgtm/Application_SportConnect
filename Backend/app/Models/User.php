@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Candidature::class);
     }
+
+    public function portfolio()
+    {
+        return $this->hasOne(Portfolio::class);
+    }
 }
