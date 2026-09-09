@@ -7,5 +7,5 @@ use App\Http\Controllers\dashboardSportif\profil\AfficherProfil;
 
 Route::post('/login', [Login::class, 'loginUser']); 
 
-// Route::middleware('auth:sanctum')
-//      ->get('/profil', [AfficherProfil::class, 'AfficherProfil']);
+Route::middleware('auth:sanctum')
+     ->get('/profil', [AfficherProfil::class, 'AfficherProfil']);
