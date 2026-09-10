@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nom')->nullable();
             $table->string('ville')->nullable();
             $table->string('description');
+            $table->unsignedBigInteger('user_id')->unique();
             
         });
     }

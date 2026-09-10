@@ -7,6 +7,7 @@ use App\Http\Controllers\profil\AfficherProfil;
 use App\Http\Controllers\DashboardSportif\PortfolioController;
 use App\Http\Controllers\DashboardAdmin\club\CreeClub;
 use App\Http\Controllers\DashboardSportif\AfficherPortfolio;
+use App\Http\Controllers\DashboardAdmin\club\AfficherClub;
 
 Route::post('/login', [Login::class, 'loginUser']);
 
@@ -15,5 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/AfficherPortfolio', [AfficherPortfolio::class, 'afficherPortfolio']);
     Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
     Route::post('/clubs', [CreeClub::class, 'creeClub']);
+
+
 });
 
