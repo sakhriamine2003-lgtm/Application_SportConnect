@@ -50,6 +50,7 @@ class PortfolioController extends Controller
                 'message' => 'Erreur de validation.',
                 'errors' => $e->errors(),
             ], 422);
+            
 
         } 
     }

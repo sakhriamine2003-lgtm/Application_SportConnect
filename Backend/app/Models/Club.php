@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Club extends Model
 {
+     protected $fillable = [
+        'nom',
+        'ville',
+        'description'
+        
+    ];
+
     //
 
     public function user()

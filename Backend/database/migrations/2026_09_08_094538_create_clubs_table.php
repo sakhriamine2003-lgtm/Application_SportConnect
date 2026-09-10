@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('clubs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('nom')->nullable();
+            $table->string('ville')->nullable();
+            $table->string('description');
+            
         });
     }
 
