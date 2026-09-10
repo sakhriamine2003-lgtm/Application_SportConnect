@@ -21,6 +21,7 @@ class CreeClub extends Controller
 
 
 
+
             $validationData['user_id'] = Auth::id();
 
             $club = Club::create($validationData);
@@ -29,8 +30,12 @@ class CreeClub extends Controller
                 'message' => 'Club créé avec succès.',
                 'data' => $club,
             ], 201);
-
-        } 
-      
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erreur lors de la création du club.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
+}
