@@ -12,5 +12,5 @@ Route::post('/login', [Login::class, 'loginUser']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
     Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
-
-    });
+    Route::post('/clubs', [CreeClub::class, 'creeClub']);
+});
