@@ -3,13 +3,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\Login;
+use App\Http\Controllers\Auth\Register;
 use App\Http\Controllers\profil\AfficherProfil;
 use App\Http\Controllers\DashboardSportif\PortfolioController;
 use App\Http\Controllers\DashboardAdmin\club\CreeClub;
 use App\Http\Controllers\DashboardSportif\AfficherPortfolio;
 use App\Http\Controllers\DashboardAdmin\club\AfficherClub;
 
+
 Route::post('/login', [Login::class, 'loginUser']);
+Route::post('/register', [Register::class, 'Register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
@@ -19,4 +22,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 });
+
 

@@ -1,9 +1,16 @@
-import React from 'react';
-import Login from './login/login.jsx'; 
+import React, { useState } from 'react';
+import Login from './login/login.jsx';
+import Register from './Register/regester.jsx';
 
 function App() {
+  const [showRegister, setShowRegister] = useState(false);
+
   return (
-    <Login />
+    showRegister ? (
+      <Register onLogin={() => setShowRegister(false)} />
+    ) : (
+      <Login onRegister={() => setShowRegister(true)} />
+    )
   );
 }
 

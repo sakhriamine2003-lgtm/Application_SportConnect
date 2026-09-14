@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../axios/axios';
 
-function Login() {
+function Login({ onRegister }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -123,6 +123,14 @@ return (
             conditions d'utilisation
           </span>.
         </p>
+
+        <button
+          type="button"
+          onClick={onRegister}
+          className="mt-4 w-full rounded-xl border border-blue-500 py-3 font-semibold text-blue-400 transition hover:bg-blue-500/10"
+        >
+          Créer un compte
+        </button>
       </section>
 
       {/* Footer */}
