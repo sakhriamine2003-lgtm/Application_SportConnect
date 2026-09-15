@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../axios/axios';
 
-function Login({ onRegister }) {
+function Login({ onRegister, onSportifLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,7 +13,20 @@ function Login({ onRegister }) {
     setError(null);
 
     try {
-      await api.post('/login', { email, password });
+      const response = await api.post('/login', { email, password });
+      const user = response.data?.user;
+      const role = String(user?.role_user || user?.role || '').trim().toLowerCase();
+
+      if (response.data?.token) {
+        localStorage.setItem('sport_connect_token', response.data.token);
+      }
+
+      if (role !== 'sportif') {
+        setError('Ce compte n’a pas accès au dashboard sportif.');
+        return;
+      }
+
+      onSportifLogin();
     } catch (err) {
       setError(err.response?.data?.message || 'Email ou mot de passe incorrect.');
     } finally {

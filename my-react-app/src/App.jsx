@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
-import Login from './login/login.jsx';
-import Register from './Register/regester.jsx';
+
+import { useState } from "react";
+
+import Login from "./login/login.jsx";
+import Register from "./Register/regester.jsx";
+import DashboardSportif from "./DashboardSportif/DashboardSportif.jsx";
 
 function App() {
-  const [showRegister, setShowRegister] = useState(false);
+  const [page, setPage] = useState("login");
+
+  if (page === "register") {
+    return <Register onLogin={() => setPage("login")} />;
+  }
+
+  if (page === "dashboard-sportif") {
+    return <DashboardSportif />;
+  }
 
   return (
-    showRegister ? (
-      <Register onLogin={() => setShowRegister(false)} />
-    ) : (
-      <Login onRegister={() => setShowRegister(true)} />
-    )
+    <Login
+      onRegister={() => setPage("register")}
+      onSportifLogin={() => setPage("dashboard-sportif")}
+    />
   );
 }
 
 export default App;
+
