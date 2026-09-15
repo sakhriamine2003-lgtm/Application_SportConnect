@@ -4,6 +4,7 @@ import { useState } from "react";
 import Login from "./login/login.jsx";
 import Register from "./Register/regester.jsx";
 import DashboardSportif from "./DashboardSportif/DashboardSportif.jsx";
+import AffichageProfil from "./profil/AffichageProfil.jsx";
 
 function App() {
   const [page, setPage] = useState("login");
@@ -13,7 +14,11 @@ function App() {
   }
 
   if (page === "dashboard-sportif") {
-    return <DashboardSportif />;
+    return <DashboardSportif onProfile={() => setPage("profile")} />;
+  }
+
+  if (page === "profile") {
+    return <AffichageProfil onBack={() => setPage("dashboard-sportif")} />;
   }
 
   return (

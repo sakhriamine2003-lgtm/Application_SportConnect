@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function DashboardSportif() {
+export default function DashboardSportif({ onProfile }) {
   return (
     <div className="min-h-screen bg-gray-100 flex">
 
@@ -30,14 +30,15 @@ export default function DashboardSportif() {
             Dashboard
           </a>
 
-          <a
-            href="/profile"
+          <button
+            type="button"
+            onClick={onProfile}
             className="flex items-center gap-3 px-4 py-3 rounded-xl
-                       text-gray-600 hover:bg-gray-100 transition"
+                       text-gray-600 hover:bg-gray-100 transition w-full text-left"
           >
             <span>👤</span>
             Profil
-          </a>
+          </button>
 
           <a
             href="#"
@@ -157,6 +158,8 @@ export default function DashboardSportif() {
             </div>
 
             <button
+              type="button"
+              onClick={onProfile}
               className="ml-auto bg-gray-900 text-white
                          px-4 py-2 rounded-lg text-sm
                          hover:bg-gray-700"
