@@ -1,32 +1,67 @@
-
 import { useState } from "react";
 
 import Login from "./login/login.jsx";
 import Register from "./Register/regester.jsx";
 import DashboardSportif from "./DashboardSportif/DashboardSportif.jsx";
+import AfficherPortfolio from "./DashboardSportif/GestionPortfolio/AfficherPortfolio.jsx";
 import AffichageProfil from "./profil/AffichageProfil.jsx";
+import CreeProfil from "./profil/CreeProfil.jsx";
 
 function App() {
+
   const [page, setPage] = useState("login");
 
-  if (page === "register") {
-    return <Register onLogin={() => setPage("login")} />;
+  if (page === "login") {
+    return (
+      <Login
+        onRegister={() => setPage("register")}
+        onSportifLogin={() => setPage("dashboard")}
+      />
+    );
   }
 
-  if (page === "dashboard-sportif") {
-    return <DashboardSportif onProfile={() => setPage("profile")} />;
+  if (page === "register") {
+    return (
+      <Register
+        onLogin={() => setPage("login")}
+      />
+    );
+  }
+
+  if (page === "dashboard") {
+    return (
+      <DashboardSportif
+        onProfile={() => setPage("profile")}
+      />
+    );
   }
 
   if (page === "profile") {
-    return <AffichageProfil onBack={() => setPage("dashboard-sportif")} />;
+    return (
+      <AffichageProfil
+        onView={() => setPage("view")}
+        onCreate={() => setPage("create")}
+        onBack={() => setPage("dashboard")}
+      />
+    );
   }
 
-  return (
-    <Login
-      onRegister={() => setPage("register")}
-      onSportifLogin={() => setPage("dashboard-sportif")}
-    />
-  );
+  if (page === "view") {
+    return (
+      <AfficherPortfolio
+        onBack={() => setPage("profile")}
+      />
+    );
+  }
+
+  if (page === "create") {
+    return (
+      <CreeProfil
+        onCreated={() => setPage("view")}
+      />
+    );
+  }
+
 }
 
 export default App;
