@@ -1,10 +1,8 @@
 import React from 'react';
-import Login from './login/login.jsx'; 
+import DashboardAdmin from './DashboardAdmin/DashboardAdmin.jsx';
 
 function App() {
-  return (
-    <Login />
-  );
+  return <DashboardAdmin />;
 }
 
 export default App;
