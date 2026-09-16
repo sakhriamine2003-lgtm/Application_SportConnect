@@ -5,7 +5,7 @@ import Register from "./Register/regester.jsx";
 import DashboardSportif from "./DashboardSportif/DashboardSportif.jsx";
 import AfficherPortfolio from "./DashboardSportif/GestionPortfolio/AfficherPortfolio.jsx";
 import AffichageProfil from "./profil/AffichageProfil.jsx";
-import CreeProfil from "./profil/CreeProfil.jsx";
+import CreeProfil from "./DashboardSportif/GestionPortfolio/CreePortfolio.jsx";
 
 function App() {
 

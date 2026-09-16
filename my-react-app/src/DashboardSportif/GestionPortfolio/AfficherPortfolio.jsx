@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 import api from "../../axios/axios";
-
 export default function AfficherPortfolio({ onBack }) {
 
   const [portfolio, setportfolio] = useState(null);
@@ -9,28 +8,21 @@ export default function AfficherPortfolio({ onBack }) {
 
   useEffect(() => {
 
-    // 1. Récupérer le token
     const token = localStorage.getItem("sport_connect_token");
-
-    // 2. Vérifier le token
     if (!token) {
       setError("Vous devez vous connecter.");
       return;
     }
-
-    // 3. Appeler Laravel
     api.get("/AfficherPortfolio", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-
-    // 4. Si Laravel répond
     .then((response) => {
       setportfolio(response.data);
     })
 
-    // 5. Si erreur
+    //  Si erreur
     .catch((error) => {
       setError("Impossible de charger le profil.");
       console.log(error);
@@ -39,7 +31,6 @@ export default function AfficherPortfolio({ onBack }) {
   }, []);
 
 
-  // Afficher l'erreur
   if (error) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
