@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../axios/axios';
 
-function Login({ onRegister, onSportifLogin }) {
+function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,7 +28,7 @@ function Login({ onRegister, onSportifLogin }) {
         return;
       }
 
-      onSportifLogin();
+      navigate('/dashboardSportif');
     } catch (err) {
       setError(err.response?.data?.message || 'Email ou mot de passe incorrect.');
     } finally {
@@ -139,7 +141,7 @@ return (
 
         <button
           type="button"
-          onClick={onRegister}
+          onClick={() => navigate('/register')}
           className="mt-4 w-full rounded-xl border border-blue-500 py-3 font-semibold text-blue-400 transition hover:bg-blue-500/10"
         >
           Créer un compte

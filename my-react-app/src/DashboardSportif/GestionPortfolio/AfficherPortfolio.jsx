@@ -1,7 +1,9 @@
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../axios/axios";
-export default function AfficherPortfolio({ onBack }) {
+export default function AfficherPortfolio() {
+  const navigate = useNavigate();
 
   const [portfolio, setportfolio] = useState(null);
   const [error, setError] = useState("");
@@ -37,7 +39,7 @@ export default function AfficherPortfolio({ onBack }) {
         <section className="w-full max-w-md rounded-2xl border border-red-400/20 bg-slate-900 p-8 text-center shadow-xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-red-400">Profil indisponible</p>
           <p className="mt-3 text-slate-300">{error}</p>
-          <button onClick={onBack} className="mt-6 rounded-lg bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-slate-200">
+          <button onClick={() => navigate("/dashboardSportif/profil")} className="mt-6 rounded-lg bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-slate-200">
             ← Retour
           </button>
         </section>
@@ -59,7 +61,7 @@ export default function AfficherPortfolio({ onBack }) {
     <main className="min-h-screen bg-slate-950 px-4 py-8 text-white md:px-8">
 
       <button
-        onClick={onBack}
+        onClick={() => navigate("/dashboardSportif/profil")}
         className="mb-8 rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10 hover:text-white"
       >
         ← Retour aux profils

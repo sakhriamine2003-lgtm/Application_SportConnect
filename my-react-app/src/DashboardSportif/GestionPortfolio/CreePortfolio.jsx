@@ -1,5 +1,6 @@
 import { useState } from "react";
-import api from "../axios/axios";
+import { useNavigate } from "react-router-dom";
+import api from "../../axios/axios";
 
 const INITIAL_FORM = {
   nom: "", prenom: "", age: "", sport: "", niveau: "",
@@ -8,11 +9,13 @@ const INITIAL_FORM = {
 };
 
 function CreeProfil() {
+  const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+
+const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -38,6 +41,13 @@ function CreeProfil() {
   
   return (
     <div className="max-w-2xl mx-auto my-6 p-6 bg-white shadow rounded-lg">
+      <button
+        type="button"
+        onClick={() => navigate("/dashboardSportif/profil")}
+        className="mb-4 rounded border px-3 py-2"
+      >
+        ← Retour
+      </button>
       <h2 className="text-xl font-bold mb-4 text-center">Créer un Profil Sportif</h2>
 
       {error && <p className="mb-4 text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}

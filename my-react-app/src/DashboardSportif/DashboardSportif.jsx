@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function DashboardSportif({ onProfile }) {
+export default function DashboardSportif() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-gray-100 flex">
 
@@ -32,7 +35,7 @@ export default function DashboardSportif({ onProfile }) {
 
           <button
             type="button"
-            onClick={onProfile}
+            onClick={() => navigate("/dashboardSportif/profil")}
             className="flex items-center gap-3 px-4 py-3 rounded-xl
                        text-gray-600 hover:bg-gray-100 transition w-full text-left"
           >
@@ -159,7 +162,7 @@ export default function DashboardSportif({ onProfile }) {
 
             <button
               type="button"
-              onClick={onProfile}
+              onClick={() => navigate("/dashboardSportif/profil")}
               className="ml-auto bg-gray-900 text-white
                          px-4 py-2 rounded-lg text-sm
                          hover:bg-gray-700"
@@ -233,8 +236,6 @@ export default function DashboardSportif({ onProfile }) {
           </div>
 
         </section>
-
-
         {/* SPONSOR */}
         <section
           className="bg-gray-900 text-white rounded-2xl

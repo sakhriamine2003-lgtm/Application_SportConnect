@@ -1,8 +1,10 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../axios/axios";
 
-function Register({ onLogin }) {
+function Register() {
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -38,7 +40,7 @@ function Register({ onLogin }) {
     try {
       await api.post("/register", form);
       alert("Compte créé avec succès !");
-      onLogin();
+      navigate("/");
 
     } catch (error) {
       setError(
@@ -150,7 +152,7 @@ function Register({ onLogin }) {
           {/* LOGIN */}
           <button
             type="button"
-            onClick={onLogin}
+            onClick={() => navigate("/")}
             className="w-full border py-3 rounded-lg"
           >
             J'ai déjà un compte

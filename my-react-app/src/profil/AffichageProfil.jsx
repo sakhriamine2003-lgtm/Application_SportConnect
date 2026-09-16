@@ -1,4 +1,8 @@
-function AffichageProfil({ onView, onCreate, onBack }) {
+import { useNavigate } from "react-router-dom";
+
+function AffichageProfil() {
+  const navigate = useNavigate();
+
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white">
       <section className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl">
@@ -15,7 +19,7 @@ function AffichageProfil({ onView, onCreate, onBack }) {
         <div className="p-6 md:p-10">
         <button
           type="button"
-          onClick={onBack}
+          onClick={() => navigate("/dashboardSportif")}
           className="mb-8 rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
         >
           ← Retour au tableau de bord
@@ -24,7 +28,7 @@ function AffichageProfil({ onView, onCreate, onBack }) {
         <div className="grid gap-5 md:grid-cols-2">
           <button
             type="button"
-            onClick={onView}
+            onClick={() => navigate("/dashboardSportif/portfolio")}
             className="group rounded-2xl border border-white/10 bg-slate-800 p-6 text-left transition hover:-translate-y-1 hover:border-cyan-400/60 hover:bg-slate-700"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-400/15 text-2xl text-cyan-300">
@@ -41,7 +45,7 @@ function AffichageProfil({ onView, onCreate, onBack }) {
 
           <button
             type="button"
-            onClick={onCreate}
+            onClick={() => navigate("/dashboardSportif/Ajouterportfolio")}
             className="group rounded-2xl border border-white/10 bg-white p-6 text-left text-slate-900 transition hover:-translate-y-1 hover:shadow-xl"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-2xl text-blue-700">
