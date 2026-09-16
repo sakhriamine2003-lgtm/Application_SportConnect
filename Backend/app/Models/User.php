@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_user', // 👈 حقل دور المستخدم
+        'role_user', 
     ];
 
     /**
@@ -71,5 +71,10 @@ class User extends Authenticatable
     public function candidatures()
     {
         return $this->hasMany(Candidature::class);
+    }
+
+    public function portfolio()
+    {
+        return $this->hasOne(Portfolio::class);
     }
 }
