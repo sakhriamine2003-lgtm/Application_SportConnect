@@ -17,14 +17,22 @@ function Login() {
     try {
       const response = await api.post('/login', { email, password });
       const user = response.data?.user;
-      const role = String(user?.role_user || user?.role || '').trim().toLowerCase();
+      const role = String(user?.role_user || user?.role || '')
+        .trim()
+        .toLowerCase()
+        .replace(/^role_/, '');
 
       if (response.data?.token) {
         localStorage.setItem('sport_connect_token', response.data.token);
       }
 
+      if (role === 'admin') {
+        navigate('/dashboardAdmin');
+        return;
+      }
+
       if (role !== 'sportif') {
-        setError('Ce compte n’a pas accès au dashboard sportif.');
+        setError('Ce compte n’a pas accès au tableau de bord.');
         return;
       }
 

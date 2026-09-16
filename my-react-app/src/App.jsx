@@ -1,18 +1,12 @@
-<<<<<<< HEAD
 import React from 'react';
-import DashboardAdmin from './DashboardAdmin/DashboardAdmin.jsx';
-
-function App() {
-  return <DashboardAdmin />;
-=======
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Login from "./login/login.jsx";
-import Register from "./Register/regester.jsx";
-import DashboardSportif from "./DashboardSportif/DashboardSportif.jsx";
-import AffichageProfil from "./profil/AffichageProfil.jsx";
-import AfficherPortfolio from "./DashboardSportif/GestionPortfolio/AfficherPortfolio.jsx";
-import CreeProfil from "./DashboardSportif/GestionPortfolio/CreePortfolio.jsx";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './login/login';
+import Register from './Register/regester';
+import DashboardSportif from './DashboardSportif/DashboardSportif';
+import DashboardAdmin from './DashboardAdmin/DashboardAdmin';
+import AffichageProfil from './profil/AffichageProfil';
+import AfficherPortfolio from './DashboardSportif/GestionPortfolio/AfficherPortfolio';
+import CreeProfil from './DashboardSportif/GestionPortfolio/CreePortfolio';
 
 function App() {
   return (
@@ -20,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboardAdmin" element={<DashboardAdmin />} />
         <Route path="/dashboardSportif" element={<DashboardSportif />} />
         <Route path="/dashboardSportif/profil" element={<AffichageProfil />} />
         <Route path="/dashboardSportif/portfolio" element={<AfficherPortfolio />} />
@@ -27,7 +22,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
->>>>>>> main
 }
 
 export default App;
