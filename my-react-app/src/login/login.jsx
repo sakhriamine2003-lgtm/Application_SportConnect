@@ -26,6 +26,12 @@ function Login() {
         localStorage.setItem('sport_connect_token', response.data.token);
       }
 
+      if (user?.role_user) {
+        localStorage.setItem('sport_connect_user_role', String(user.role_user).trim().toLowerCase());
+      } else if (user?.role) {
+        localStorage.setItem('sport_connect_user_role', String(user.role).trim().toLowerCase());
+      }
+
       if (role === 'admin') {
         navigate('/dashboardAdmin');
         return;

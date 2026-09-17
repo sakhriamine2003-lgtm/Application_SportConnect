@@ -1,116 +1,127 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, BriefcaseBusiness, CalendarDays, Crosshair, Dumbbell, MapPin, Ruler, Trophy, TrendingUp, Users, Weight } from "lucide-react";
 import api from "../../axios/axios";
+
 export default function AfficherPortfolio() {
+
   const navigate = useNavigate();
 
-  const [portfolio, setportfolio] = useState(null);
+  const [portfolio, setPortfolio] = useState(null);
   const [error, setError] = useState("");
 
+  // Charger le portfolio
   useEffect(() => {
 
     const token = localStorage.getItem("sport_connect_token");
+
+    // Vérifier le token
     if (!token) {
       setError("Vous devez vous connecter.");
       return;
     }
+
+    // Appeler Laravel
     api.get("/AfficherPortfolio", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
+
+    // Si succès
     .then((response) => {
-      setportfolio(response.data);
+      setPortfolio(response.data);
     })
 
-    //  Si erreur
+    // Si erreur
     .catch((error) => {
-      setError("Impossible de charger le profil.");
       console.log(error);
+      setError("Impossible de charger le portfolio.");
     });
 
   }, []);
 
 
+  // Afficher erreur
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
-        <section className="w-full max-w-md rounded-2xl border border-red-400/20 bg-slate-900 p-8 text-center shadow-xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-red-400">Profil indisponible</p>
-          <p className="mt-3 text-slate-300">{error}</p>
-          <button onClick={() => navigate("/dashboardSportif/profil")} className="mt-6 rounded-lg bg-white px-5 py-3 font-semibold text-slate-900 hover:bg-slate-200">
-            ← Retour
-          </button>
-        </section>
-      </main>
+      <div className="min-h-screen bg-slate-100 p-10 text-center">
+
+        <p className="text-red-600">
+          {error}
+        </p>
+
+        <button
+          onClick={() => navigate("/dashboardSportif/profil")}
+          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white"
+        >
+          <ArrowLeft size={17} /> Retour
+        </button>
+
+      </div>
     );
   }
 
 
-  
+  // Chargement
   if (!portfolio) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-950 text-slate-300">
-        Chargement du profil...
-      </main>
+      <div className="min-h-screen bg-slate-100 p-10 text-center text-slate-500">
+        Chargement...
+      </div>
     );
   }
 
+
+  // Afficher le portfolio
   return (
-    <main className="min-h-screen bg-slate-950 px-4 py-8 text-white md:px-8">
+    <div className="min-h-screen bg-slate-100 px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-4xl">
 
       <button
         onClick={() => navigate("/dashboardSportif/profil")}
-        className="mb-8 rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10 hover:text-white"
+        className="mb-6 inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold text-slate-500 transition hover:bg-white hover:text-slate-950"
       >
-        ← Retour aux profils
+        <ArrowLeft size={18} /> Retour au profil
       </button>
 
-      <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-slate-900 shadow-2xl">
-        <div className="bg-gradient-to-r from-blue-700 to-cyan-600 px-6 py-8 md:px-10">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            {portfolio.photo ? (
-              <img src={portfolio.photo} alt="Photo du sportif" className="h-24 w-24 rounded-2xl object-cover ring-4 ring-white/20" />
-            ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/15 text-4xl">◉</div>
-            )}
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-blue-100">Profil sportif</p>
-              <h1 className="mt-1 text-3xl font-bold">{portfolio.prenom} {portfolio.nom}</h1>
-              <p className="mt-1 text-blue-100">{portfolio.sport} · {portfolio.niveau}</p>
-            </div>
+      <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-slate-200/70">
+        <div className="relative overflow-hidden bg-slate-950 p-7 text-white sm:p-9">
+          <img src={portfolio.photo || "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1200&q=85"} alt="Terrain de football" className="absolute inset-0 h-full w-full object-cover opacity-35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
+          <div className="relative flex items-center gap-5">
+            {portfolio.photo && <img src={portfolio.photo} alt="Photo du sportif" className="h-20 w-20 rounded-xl border-2 border-lime-400 object-cover" />}
+            <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Portfolio sportif</p><h1 className="mt-2 text-3xl font-black">{portfolio.prenom} {portfolio.nom}</h1><p className="mt-1 flex items-center gap-2 text-sm text-slate-300"><Dumbbell size={16} /> {portfolio.sport}</p></div>
           </div>
         </div>
+        <div className="p-6 sm:p-9">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{[[CalendarDays, "Age", `${portfolio.age} ans`], [TrendingUp, "Niveau", portfolio.niveau], [Crosshair, "Position", portfolio.position], [Users, "Equipe", portfolio.equipe || "Non renseignée"], [MapPin, "Ville", portfolio.ville], [Ruler, "Taille", `${portfolio.taille} cm`], [Weight, "Poids", `${portfolio.poids} kg`]].map(([Icon, label, value]) => <div className="rounded-xl border border-slate-200 bg-slate-50 p-4" key={label}><Icon size={19} className="mb-3 text-lime-600" /><p className="text-xs font-bold uppercase tracking-wider text-slate-400">{label}</p><p className="mt-1 font-bold text-slate-900">{value || "Non renseigné"}</p></div>)}</div>
 
-        <div className="grid gap-8 p-6 md:grid-cols-2 md:p-10">
-          <section>
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-cyan-300">Informations</h2>
-            <div className="space-y-3 text-sm">
-              <p><strong className="text-slate-400">Age :</strong> {portfolio.age} ans</p>
-              <p><strong className="text-slate-400">Position :</strong> {portfolio.position}</p>
-              <p><strong className="text-slate-400">Equipe :</strong> {portfolio.equipe || "Non renseignée"}</p>
-              <p><strong className="text-slate-400">Ville :</strong> {portfolio.ville}</p>
-              <p><strong className="text-slate-400">Taille :</strong> {portfolio.taille} cm</p>
-              <p><strong className="text-slate-400">Poids :</strong> {portfolio.poids} kg</p>
-            </div>
-          </section>
+        {/* Experience */}
+        <h2 className="mt-8 flex items-center gap-2 text-xl font-black text-slate-950">
+          <BriefcaseBusiness className="text-lime-600" size={21} />
+          Expérience
+        </h2>
 
-          <section className="space-y-5">
-            <div>
-              <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-cyan-300">Experience</h2>
-              <p className="leading-7 text-slate-300">{portfolio.experience}</p>
-            </div>
-            <div>
-              <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-cyan-300">Palmares</h2>
-              <p className="leading-7 text-slate-300">{portfolio.palmares}</p>
-            </div>
-          </section>
+        <p className="mt-2 rounded-xl bg-slate-50 p-4 leading-7 text-slate-600">
+          {portfolio.experience || "Non renseignée"}
+        </p>
+
+
+        {/* Palmares */}
+        <h2 className="mt-8 flex items-center gap-2 text-xl font-black text-slate-950">
+          <Trophy className="text-lime-600" size={21} />
+          Palmarès
+        </h2>
+
+        <p className="mt-2 rounded-xl bg-slate-50 p-4 leading-7 text-slate-600">
+          {portfolio.palmares || "Non renseigné"}
+        </p>
+
         </div>
-
+      </div>
       </div>
 
-    </main>
+    </div>
   );
 }
-

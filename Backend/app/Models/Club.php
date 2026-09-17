@@ -9,8 +9,8 @@ class Club extends Model
      protected $fillable = [
         'nom',
         'ville',
-        'description'
-        
+        'description',
+        'user_id'
     ];
 
     //

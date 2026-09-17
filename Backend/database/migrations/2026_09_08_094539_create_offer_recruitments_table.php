@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('offer_recruitments', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('title')->nullable();
             $table->string('date')->nullable();
             $table->string('description')->nullable();
-
+            $table->timestamps();
         });
     }
 

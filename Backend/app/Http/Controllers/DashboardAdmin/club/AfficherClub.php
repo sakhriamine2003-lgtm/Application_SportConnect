@@ -11,16 +11,14 @@ class AfficherClub extends Controller
 {
     public function afficherClub()
     {
-       $club =Club::where("user_id", Auth::id())->first();
-       return response()->json($club);
-    
-    if(!$club){
-        return response()->json([
-            'message' => 'Aucun club trouvé pour cet utilisateur.',
-        ], 404);
+        $club = Club::where('user_id', Auth::id())->first();
+
+        if (!$club) {
+            return response()->json([
+                'message' => 'Aucun club trouvé pour cet utilisateur.',
+            ], 404);
+        }
+
+        return response()->json($club);
     }
-
-
-    }
-
 }
