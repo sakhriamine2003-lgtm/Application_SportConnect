@@ -16,11 +16,16 @@ Route::post('/login', [Login::class, 'loginUser']);
 Route::post('/register', [Register::class, 'Register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
-    Route::get('/AfficherPortfolio', [AfficherPortfolio::class, 'afficherPortfolio']);
-    Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
-    Route::get('/clubs', [AfficherClub::class, 'afficherClub']);
-    Route::post('/clubs', [CreeClub::class, 'creeClub']);
+    Route::middleware('role:sportif')->group(function () {
+        Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
+        Route::get('/AfficherPortfolio', [AfficherPortfolio::class, 'afficherPortfolio']);
+        Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/clubs', [AfficherClub::class, 'afficherClub']);
+        Route::post('/clubs', [CreeClub::class, 'creeClub']);
+    });
 
     Route::get('/admin/sportifs', function () {
         $user = Auth::user();
@@ -34,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
             ->get();
 
         return response()->json($sportifs);
-    });
+    })->middleware('role:admin');
 
     Route::get('/offres', [OffreRecrutementController::class, 'index']);
     Route::post('/offres', [OffreRecrutementController::class, 'store'])->middleware('role:admin');
