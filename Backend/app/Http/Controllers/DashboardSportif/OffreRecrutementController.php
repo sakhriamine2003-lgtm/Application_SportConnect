@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Http\Controllers\DashboardSportif;
 
 use App\Http\Controllers\Controller;
@@ -13,9 +14,9 @@ class OffreRecrutementController extends Controller
         $offres = OffreRecrutement::latest()->get();
 
         return response()->json($offres);
-}
+    }
 
-  public function store(Request $request)
+    public function store(Request $request)
     {
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
@@ -31,4 +32,18 @@ class OffreRecrutementController extends Controller
             'date' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
         ]);
-    }}
+
+        $offre = OffreRecrutement::create([
+            'title' => $validated['title'],
+            'date' => $validated['date'],
+            'description' => $validated['description'],
+            'user_id' => $user->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Offre créée avec succès.',
+            'data' => $offre,
+        ], 201);
+    }
+
+}
