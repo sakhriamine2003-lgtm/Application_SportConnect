@@ -88,4 +88,3 @@ class OffreRecrutementController extends Controller
             'message' => 'Offre supprimée avec succès.',
         ]);
     }
-}
