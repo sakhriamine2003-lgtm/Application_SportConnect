@@ -44,7 +44,7 @@ export default function CreerClub() {
         <div className="relative overflow-hidden bg-slate-950 px-6 py-8 text-white md:px-10">
           <img src="https://images.unsplash.com/photo-1579952363873-27f3b0541f25?auto=format&fit=crop&w=1400&q=85" alt="Match de football" className="absolute inset-0 h-full w-full object-cover opacity-35" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
-          <div className="relative"><p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-lime-300"><Building2 size={16} /> SportConnect</p><h1 className="mt-3 text-3xl font-black">Créer un club</h1><p className="mt-2 text-slate-300">Renseignez les informations du club pour l’ajouter à la plateforme.</p></div>
+          <div className="relative"><p className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-lime-300"><Building2 size={16} /> SportConnect</p><h1 className="mt-3 text-3xl font-black">Créer un club</h1><p className="mt-2 text-slate-300">Renseignez les informations du club pour l'ajouter à la plateforme.</p></div>
         </div>
 
         <div className="p-6 md:p-10">
