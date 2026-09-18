@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\DashboardSportif;
 
 use App\Http\Controllers\Controller;
-use App\Models\Portfolio;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 
-class PortfolioController extends Controller    
+class PortfolioController extends Controller
 {
     public function ajouterPortfolio(Request $request): JsonResponse
     {
@@ -32,26 +30,19 @@ class PortfolioController extends Controller
 
             $user = $request->user();
 
-            if ($user->portfolio()->exists()) {
-                return response()->json([
-                    'message' => 'Un portfolio existe déjà pour cet utilisateur.',
-                ], 409);
-            }
-
-            $portfolio = $user->portfolio()->create($validatedData);
+            $portfolio = $user->portfolio()->updateOrCreate([], $validatedData);
 
             return response()->json([
-                'message' => 'Portfolio ajouté avec succès.',
+                'message' => 'Portfolio enregistré avec succès.',
                 'data' => $portfolio,
-            ], 201);
+            ]);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Erreur de validation.',
                 'errors' => $e->errors(),
             ], 422);
-            
 
-        } 
+        }
     }
 }
