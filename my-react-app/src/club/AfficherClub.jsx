@@ -85,5 +85,6 @@ export default function AfficherClub() {
         </div>
       </section>
     </main>
+  
   );
 }
