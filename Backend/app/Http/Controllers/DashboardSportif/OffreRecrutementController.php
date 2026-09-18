@@ -46,7 +46,7 @@ class OffreRecrutementController extends Controller
         ], 201);
     }
 
-     public function update(Request $request, OffreRecrutement $offre)
+    public function update(Request $request, OffreRecrutement $offre)
     {
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
@@ -71,4 +71,21 @@ class OffreRecrutementController extends Controller
         ]);
     }
 
+    public function destroy(OffreRecrutement $offre)
+    {
+        $user = Auth::user();
+        $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
+
+        if (! $user || $userRole !== 'admin') {
+            return response()->json([
+                'message' => 'Seuls les administrateurs peuvent supprimer des offres.',
+            ], 403);
+        }
+
+        $offre->delete();
+
+        return response()->json([
+            'message' => 'Offre supprimée avec succès.',
+        ]);
+    }
 }
