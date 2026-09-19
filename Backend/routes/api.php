@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\Register;
 use App\Http\Controllers\profil\AfficherProfil;
@@ -16,6 +17,12 @@ Route::post('/login', [Login::class, 'loginUser']);
 Route::post('/register', [Register::class, 'Register']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', function (Request $request) {
+        $request->user()->currentAccessToken()?->delete();
+
+        return response()->json(['message' => 'Déconnexion réussie.']);
+    });
+
     Route::middleware('role:sportif')->group(function () {
         Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
         Route::get('/AfficherPortfolio', [AfficherPortfolio::class, 'afficherPortfolio']);

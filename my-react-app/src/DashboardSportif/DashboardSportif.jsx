@@ -1,14 +1,28 @@
 import { useNavigate } from "react-router-dom";
+import api from "../axios/axios";
 
 export default function DashboardSportif() {
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("sport_connect_token");
+      await api.post("/logout", {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } finally {
+      localStorage.removeItem("sport_connect_token");
+      localStorage.removeItem("sport_connect_user_role");
+      navigate("/");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 lg:flex">
       <aside className="flex w-full shrink-0 flex-col bg-slate-950 px-4 py-5 text-slate-300 lg:min-h-screen lg:w-64">
         <div className="mb-10 flex items-center gap-3 px-2"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-400 text-sm font-black text-slate-950">SC</div><div><p className="text-sm font-bold tracking-wide text-white">Sport Connect</p><p className="text-xs text-slate-500">Espace sportif</p></div></div>
         <nav className="flex-1 space-y-1" aria-label="Navigation principale"><p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">Mon espace</p><button type="button" onClick={() => navigate("/dashboardSportif")} className="flex w-full items-center gap-3 rounded-xl bg-lime-400 px-3 py-3 text-left text-sm font-semibold text-slate-950 shadow-lg shadow-lime-950/30"><span className="w-5 text-center text-xs font-black">01</span>Dashboard</button><button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">02</span>Profil</button><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">03</span>Résultats</a><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">04</span>Sports</a><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">05</span>Activités</a></nav>
-        <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-5"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 font-black text-slate-950">A</div><div><p className="font-semibold text-white">Amine</p><p className="text-sm text-slate-500">Sportif</p></div></div>
+        <div className="mt-8 border-t border-white/10 pt-5"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 font-black text-slate-950">A</div><div><p className="font-semibold text-white">Amine</p><p className="text-sm text-slate-500">Sportif</p></div></div><button type="button" onClick={handleLogout} className="mt-4 w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-red-950/40 hover:text-red-300">Déconnexion</button></div>
       </aside>
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-10 lg:py-9">
         <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-lime-600">Espace sportif</p><h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Bonjour Amine</h1><p className="mt-2 text-sm text-slate-500">Suivez votre parcours et vos opportunités sportives.</p></div><div className="flex items-center gap-4"><button type="button" aria-label="Notifications" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600">Notifications</button><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div><span className="font-semibold text-slate-800">Amine</span></div></div></header>

@@ -1,6 +1,6 @@
 const ITEMS = ['Dashboard', 'Offres', 'Sportifs', 'Clubs', 'Candidatures', 'Statistiques'];
 
-export default function AdminSidebar({ activeItem, onNavigate }) {
+export default function AdminSidebar({ activeItem, onLogout }) {
   return (
     <aside className="flex w-full shrink-0 flex-col bg-slate-950 px-4 py-5 text-slate-300 lg:min-h-screen lg:w-64">
       <div className="mb-10 flex items-center gap-3 px-2">
@@ -32,7 +32,7 @@ export default function AdminSidebar({ activeItem, onNavigate }) {
 
       <button
         type="button"
-        onClick={() => onNavigate('Déconnexion')}
+        onClick={onLogout}
         className="mt-8 flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-slate-400 transition hover:bg-red-950/40 hover:text-red-300"
       >
         <span className="w-5 text-center text-xs font-black">DX</span>

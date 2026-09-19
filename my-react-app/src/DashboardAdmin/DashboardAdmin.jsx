@@ -9,6 +9,19 @@ export default function DashboardAdmin() {
   const [loadingSportifs, setLoadingSportifs] = useState(true);
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('sport_connect_token');
+      await api.post('/logout', {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    } finally {
+      localStorage.removeItem('sport_connect_token');
+      localStorage.removeItem('sport_connect_user_role');
+      navigate('/');
+    }
+  };
+
   useEffect(() => {
     const fetchSportifs = async () => {
       try {
@@ -30,7 +43,7 @@ export default function DashboardAdmin() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-900 lg:flex">
-      <AdminSidebar activeItem={activeItem} onNavigate={setActiveItem} />
+      <AdminSidebar activeItem={activeItem} onNavigate={setActiveItem} onLogout={handleLogout} />
 
       <main className="min-w-0 flex-1 px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
         <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
