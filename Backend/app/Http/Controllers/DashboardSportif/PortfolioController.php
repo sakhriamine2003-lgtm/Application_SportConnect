@@ -13,6 +13,10 @@ class PortfolioController extends Controller
     public function ajouterPortfolio(Request $request): JsonResponse
     {
         try {
+            $photoRules = $request->hasFile('photo')
+                ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120']
+                : ['nullable', 'string', 'max:2048'];
+
             $validatedData = $request->validate([
                 'nom' => ['required', 'string', 'max:255'],
                 'prenom' => ['required', 'string', 'max:255'],
@@ -26,7 +30,7 @@ class PortfolioController extends Controller
                 'poids' => ['required', 'numeric', 'min:0'],
                 'experience' => ['required', 'string'],
                 'palmares' => ['required', 'string'],
-                'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+                'photo' => $photoRules,
             ]);
 
             $user = $request->user();

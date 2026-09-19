@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardAdmin\club\CreeClub;
 use App\Http\Controllers\DashboardSportif\AfficherPortfolio;
 use App\Http\Controllers\DashboardAdmin\club\AfficherClub;
 use App\Http\Controllers\DashboardSportif\OffreRecrutementController;
+use App\Http\Controllers\DashboardSportif\CandidatureController;
 
 Route::post('/login', [Login::class, 'loginUser']);
 Route::post('/register', [Register::class, 'Register']);
@@ -27,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profil', [AfficherProfil::class, 'afficherProfil']);
         Route::get('/AfficherPortfolio', [AfficherPortfolio::class, 'afficherPortfolio']);
         Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
+        Route::post('/offres/{offre}/candidatures', [CandidatureController::class, 'store']);
+        Route::get('/mes-candidatures', [CandidatureController::class, 'mine']);
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -52,6 +55,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/offres', [OffreRecrutementController::class, 'store'])->middleware('role:admin');
     Route::put('/offres/{offre}', [OffreRecrutementController::class, 'update'])->middleware('role:admin');
     Route::delete('/offres/{offre}', [OffreRecrutementController::class, 'destroy'])->middleware('role:admin');
+    Route::get('/candidatures', [CandidatureController::class, 'index'])->middleware('role:admin');
+    Route::patch('/candidatures/{candidature}', [CandidatureController::class, 'updateStatus'])->middleware('role:admin');
 });
 
 

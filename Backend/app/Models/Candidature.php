@@ -6,14 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Candidature extends Model
 {
-    //
+    protected $fillable = [
+        'offre_recrutement_id',
+        'user_id',
+        'status',
+    ];
+
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
 
 public function offreRecrutement()
-{
-    return $this->belongsTo(OffreRecrutement::class);
-}
+    {
+        return $this->belongsTo(OffreRecrutement::class);
+    }
 }
