@@ -36,7 +36,7 @@ export default function AfficherPortfolio() {
     // Si erreur
     .catch((error) => {
       console.log(error);
-      setError("Impossible de charger le portfolio.");
+      setError(error.response?.data?.message || "Impossible de charger le portfolio.");
     });
 
   }, []);

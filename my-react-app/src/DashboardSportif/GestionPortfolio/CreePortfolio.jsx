@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -26,28 +26,77 @@ const INITIAL_FORM = {
 function CreeProfil() {
   const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
+  const [photoPreview, setPhotoPreview] = useState("");
+  const [existingPortfolio, setExistingPortfolio] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("sport_connect_token");
 
-const handleChange = (e) => {
+    if (!token) return;
+
+    api.get("/AfficherPortfolio", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(({ data }) => setExistingPortfolio(data))
+      .catch((err) => {
+        if (err.response?.status !== 404) {
+          setError("Impossible de vérifier votre portfolio existant.");
+        }
+      });
+  }, []);
+
+  useEffect(() => () => {
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+  }, [photoPreview]);
+
+  const handleChange = (e) => {
+    if (e.target.name === "photo") {
+      const photo = e.target.files?.[0];
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+      setPhotoPreview(photo ? URL.createObjectURL(photo) : "");
+      setForm({ ...form, photo });
+      return;
+    }
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (existingPortfolio && !window.confirm("Un portfolio existe déjà. Voulez-vous le remplacer ? L'ancienne photo sera supprimée uniquement après confirmation et réussite de l'enregistrement.")) {
+      return;
+    }
+
     setLoading(true);
 
     try {
       const token = localStorage.getItem("sport_connect_token");
-      await api.post("/portfolio", form, {
-        headers: { Authorization: `Bearer ${token}` }
+      const formData = new FormData();
+      Object.entries(form).forEach(([name, value]) => {
+        if (value !== "" && value !== undefined && value !== null) {
+          formData.append(name, value);
+        }
+      });
+
+      await api.post("/portfolio", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
       setForm(INITIAL_FORM);
+      setPhotoPreview("");
+      setExistingPortfolio({});
       alert("Profil créé avec succès !");
     } catch (err) {
-      setError("Erreur lors de la création du profil.");
+      const validationErrors = err.response?.data?.errors;
+      const message = validationErrors
+        ? Object.values(validationErrors).flat().join(" ")
+        : err.response?.data?.message || "Erreur lors de la création du profil.";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -98,20 +147,20 @@ const handleChange = (e) => {
         </div></section>
 
         <section><h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500">Profil athlétique</h3><div className="grid gap-4 sm:grid-cols-2">
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Âge</span><div className="relative"><CalendarDays className="absolute left-3 top-3 text-slate-400" size={18} /><input name="age" type="number" placeholder="Ex. 24" value={form.age} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Âge <span className="text-lime-600">*</span></span><div className="relative"><CalendarDays className="absolute left-3 top-3 text-slate-400" size={18} /><input name="age" type="number" min="1" max="120" placeholder="Ex. 24" value={form.age} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
           <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Sport <span className="text-lime-600">*</span></span><div className="relative"><Dumbbell className="absolute left-3 top-3 text-slate-400" size={18} /><input name="sport" placeholder="Ex. Football" value={form.sport} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Niveau</span><div className="relative"><TrendingUp className="absolute left-3 top-3 text-slate-400" size={18} /><input name="niveau" placeholder="Ex. Professionnel" value={form.niveau} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Position</span><div className="relative"><Crosshair className="absolute left-3 top-3 text-slate-400" size={18} /><input name="position" placeholder="Ex. Milieu" value={form.position} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Niveau <span className="text-lime-600">*</span></span><div className="relative"><TrendingUp className="absolute left-3 top-3 text-slate-400" size={18} /><input name="niveau" placeholder="Ex. Professionnel" value={form.niveau} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Position <span className="text-lime-600">*</span></span><div className="relative"><Crosshair className="absolute left-3 top-3 text-slate-400" size={18} /><input name="position" placeholder="Ex. Milieu" value={form.position} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
           <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Équipe</span><div className="relative"><Users className="absolute left-3 top-3 text-slate-400" size={18} /><input name="equipe" placeholder="Votre équipe" value={form.equipe} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Ville</span><div className="relative"><MapPin className="absolute left-3 top-3 text-slate-400" size={18} /><input name="ville" placeholder="Votre ville" value={form.ville} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Taille <span className="text-slate-400">(cm)</span></span><div className="relative"><Ruler className="absolute left-3 top-3 text-slate-400" size={18} /><input name="taille" type="number" placeholder="Ex. 180" value={form.taille} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Poids <span className="text-slate-400">(kg)</span></span><div className="relative"><Weight className="absolute left-3 top-3 text-slate-400" size={18} /><input name="poids" type="number" placeholder="Ex. 75" value={form.poids} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Ville <span className="text-lime-600">*</span></span><div className="relative"><MapPin className="absolute left-3 top-3 text-slate-400" size={18} /><input name="ville" placeholder="Votre ville" value={form.ville} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Taille <span className="text-slate-400">(cm)</span> <span className="text-lime-600">*</span></span><div className="relative"><Ruler className="absolute left-3 top-3 text-slate-400" size={18} /><input name="taille" type="number" min="0" step="0.01" placeholder="Ex. 180" value={form.taille} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Poids <span className="text-slate-400">(kg)</span> <span className="text-lime-600">*</span></span><div className="relative"><Weight className="absolute left-3 top-3 text-slate-400" size={18} /><input name="poids" type="number" min="0" step="0.01" placeholder="Ex. 75" value={form.poids} onChange={handleChange} required className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
         </div></section>
 
         <section className="space-y-4"><h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">Votre parcours</h3>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Photo de profil</span><div className="relative"><Image className="absolute left-3 top-3 text-slate-400" size={18} /><input name="photo" placeholder="URL de votre photo" value={form.photo} onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Expérience</span><div className="relative"><BriefcaseBusiness className="absolute left-3 top-3 text-slate-400" size={18} /><textarea name="experience" placeholder="Décrivez votre expérience sportive" value={form.experience} onChange={handleChange} className="min-h-24 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" rows="3" /></div></label>
-          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Palmarès</span><div className="relative"><Trophy className="absolute left-3 top-3 text-slate-400" size={18} /><textarea name="palmares" placeholder="Ajoutez vos principales réussites" value={form.palmares} onChange={handleChange} className="min-h-24 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" rows="3" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Photo de profil</span><div className="relative"><Image className="absolute left-3 top-3 text-slate-400" size={18} /><input name="photo" type="file" accept="image/jpeg,image/png,image/webp" onChange={handleChange} className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition file:mr-3 file:border-0 file:bg-slate-950 file:px-3 file:py-2 file:text-xs file:font-bold file:text-white focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" /></div>{photoPreview && <img src={photoPreview} alt="Aperçu de votre photo" className="mt-3 h-24 w-24 rounded-xl object-cover ring-2 ring-lime-400" />}</label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Expérience <span className="text-lime-600">*</span></span><div className="relative"><BriefcaseBusiness className="absolute left-3 top-3 text-slate-400" size={18} /><textarea name="experience" placeholder="Décrivez votre expérience sportive" value={form.experience} onChange={handleChange} required className="min-h-24 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" rows="3" /></div></label>
+          <label className="block"><span className="mb-2 block text-sm font-semibold text-slate-700">Palmarès <span className="text-lime-600">*</span></span><div className="relative"><Trophy className="absolute left-3 top-3 text-slate-400" size={18} /><textarea name="palmares" placeholder="Ajoutez vos principales réussites" value={form.palmares} onChange={handleChange} required className="min-h-24 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100" rows="3" /></div></label>
         </section>
 
         <button type="submit" disabled={loading} className="inline-flex w-full items-center justify-center rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-50">
