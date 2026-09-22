@@ -1,9 +1,30 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Bell, ClipboardList, Dumbbell, LayoutDashboard, Trophy, UserRound } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, Trophy, UserRound } from "lucide-react";
 import api from "../axios/axios";
 
 export default function DashboardSportif() {
   const navigate = useNavigate();
+  const [offres, setOffres] = useState([]);
+  const [loadingOffres, setLoadingOffres] = useState(true);
+
+  useEffect(() => {
+    const fetchOffres = async () => {
+      try {
+        const token = localStorage.getItem("sport_connect_token");
+        const response = await api.get("/offres", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setOffres(response.data || []);
+      } catch (error) {
+        console.error('Erreur chargement offres:', error);
+      } finally {
+        setLoadingOffres(false);
+      }
+    };
+
+    fetchOffres();
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -111,6 +132,36 @@ export default function DashboardSportif() {
                 <button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-lime-400 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-lime-300">Consulter les offres</button>
               </div>
             </div>
+          </section>
+
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><BriefcaseBusiness size={15} /> Recrutement</p>
+                <h2 className="mt-2 text-xl font-semibold text-slate-950">Offres récentes</h2>
+                <p className="mt-2 text-sm text-slate-500">Les dernières opportunités publiées par les clubs.</p>
+              </div>
+              <button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-lime-400 hover:text-slate-950">Voir toutes les offres</button>
+            </div>
+
+            {loadingOffres ? (
+              <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Chargement des offres...</div>
+            ) : offres.length === 0 ? (
+              <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Aucune offre disponible pour le moment.</div>
+            ) : (
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {offres.slice(0, 3).map((offre) => (
+                  <article key={offre.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-lime-300 hover:bg-white hover:shadow-lg">
+                    <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-lime-600">
+                      Offre {offre.sport && <span className="rounded-full bg-lime-100 px-2 py-0.5 text-[11px] font-bold text-lime-700">{offre.sport}</span>}
+                    </p>
+                    <h3 className="mt-2 text-base font-bold text-slate-900">{offre.title}</h3>
+                    <p className="mt-1 flex items-center gap-2 text-xs text-slate-500"><CalendarDays size={13} /> {offre.date}</p>
+                    <p className="mt-2 line-clamp-2 text-sm text-slate-600">{offre.description}</p>
+                  </article>
+                ))}
+              </div>
+            )}
           </section>
 
           <section className="flex flex-col justify-between gap-5 rounded-2xl bg-lime-400 p-7 text-slate-950 sm:flex-row sm:items-center">

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Dumbbell, UserRound, CalendarDays, TrendingUp, Crosshair, Users, MapPin, Ruler, Weight, BriefcaseBusiness, Trophy } from "lucide-react";
 import api from "../../axios/axios";
+import { SPORTS } from "../../utils/sports";
 
 function CreeProfil() {
   const navigate = useNavigate();
@@ -197,14 +198,18 @@ function CreeProfil() {
                     </span>
                     <div className="relative">
                       <Dumbbell className="absolute left-3 top-3 text-slate-400" size={18} />
-                      <input
+                      <select
                         name="sport"
-                        placeholder="Ex. Football"
                         value={form.sport}
                         onChange={handleChange}
                         required
                         className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-sm outline-none transition focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
-                      />
+                      >
+                        <option value="" disabled>Sélectionnez un sport</option>
+                        {SPORTS.map((sport) => (
+                          <option key={sport} value={sport}>{sport}</option>
+                        ))}
+                      </select>
                     </div>
                   </label>
 

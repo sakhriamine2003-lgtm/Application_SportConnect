@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CalendarDays, ClipboardList, FileText, Plus } from 'lucide-react';
+import { ArrowLeft, CalendarDays, ClipboardList, Dumbbell, FileText, Plus } from 'lucide-react';
 import api from '../axios/axios';
+import { SPORTS } from '../utils/sports';
 
 const initialForm = {
   title: '',
+  sport: '',
   date: '',
   description: '',
 };
@@ -72,6 +74,22 @@ export default function CreerOffre() {
                 placeholder="Ex : Coach de football"
                 required
               />
+            </div>
+
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><Dumbbell size={16} className="text-lime-600" /> Sport</label>
+              <select
+                name="sport"
+                value={form.sport}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
+                required
+              >
+                <option value="" disabled>Sélectionnez un sport</option>
+                {SPORTS.map((sport) => (
+                  <option key={sport} value={sport}>{sport}</option>
+                ))}
+              </select>
             </div>
 
             <div>

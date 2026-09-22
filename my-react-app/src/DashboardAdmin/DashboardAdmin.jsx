@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BriefcaseBusiness, Shield, UserRound, Users } from 'lucide-react';
+import { BriefcaseBusiness, Dumbbell, Shield, UserRound, Users } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import api from '../axios/axios';
 import { getInitials } from '../utils/initials';
@@ -9,6 +9,7 @@ export default function DashboardAdmin() {
   const [activeItem, setActiveItem] = useState('Dashboard');
   const [sportifs, setSportifs] = useState([]);
   const [loadingSportifs, setLoadingSportifs] = useState(true);
+  const [sportifSportFilter, setSportifSportFilter] = useState('');
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -53,6 +54,15 @@ export default function DashboardAdmin() {
 
     fetchSportifs();
   }, []);
+
+  const sportifSports = useMemo(
+    () => [...new Set(sportifs.map((sportif) => sportif.portfolio?.sport).filter(Boolean))],
+    [sportifs]
+  );
+
+  const displayedSportifs = sportifSportFilter
+    ? sportifs.filter((sportif) => sportif.portfolio?.sport === sportifSportFilter)
+    : sportifs;
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-900 lg:flex">
@@ -170,13 +180,38 @@ export default function DashboardAdmin() {
             <span className="rounded-full bg-lime-50 px-3 py-1 text-xs font-semibold text-lime-700">{sportifs.length} inscrit(s)</span>
           </div>
 
+          {sportifSports.length > 0 && (
+            <div className="mb-5 flex flex-wrap items-center gap-2">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"><Dumbbell size={14} className="text-lime-600" /> Filtrer par sport :</p>
+              <button
+                type="button"
+                onClick={() => setSportifSportFilter('')}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${sportifSportFilter === '' ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                Tous
+              </button>
+              {sportifSports.map((sport) => (
+                <button
+                  key={sport}
+                  type="button"
+                  onClick={() => setSportifSportFilter(sport)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${sportifSportFilter === sport ? 'bg-lime-400 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                >
+                  {sport}
+                </button>
+              ))}
+            </div>
+          )}
+
           {loadingSportifs ? (
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Chargement des sportifs...</div>
           ) : sportifs.length === 0 ? (
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Aucun sportif inscrit pour le moment.</div>
+          ) : displayedSportifs.length === 0 ? (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Aucun sportif pour le sport "{sportifSportFilter}".</div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {sportifs.map((sportif) => {
+              {displayedSportifs.map((sportif) => {
                 const portfolio = sportif.portfolio || {};
                 return (
                   <article key={sportif.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-lime-300 hover:bg-white hover:shadow-lg">

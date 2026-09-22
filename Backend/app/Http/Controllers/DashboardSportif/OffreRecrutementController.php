@@ -29,12 +29,14 @@ class OffreRecrutementController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'sport' => ['nullable', 'string', 'in:Football,Basketball,Handball,Volleyball'],
             'date' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
         ]);
 
         $offre = OffreRecrutement::create([
             'title' => $validated['title'],
+            'sport' => $validated['sport'] ?? null,
             'date' => $validated['date'],
             'description' => $validated['description'],
             'user_id' => $user->id,
@@ -59,6 +61,7 @@ class OffreRecrutementController extends Controller
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'sport' => ['nullable', 'string', 'in:Football,Basketball,Handball,Volleyball'],
             'date' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
         ]);

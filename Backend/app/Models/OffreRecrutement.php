@@ -10,6 +10,7 @@ class OffreRecrutement extends Model
 
     protected $fillable = [
         'title',
+        'sport',
         'date',
         'description',
         'user_id',

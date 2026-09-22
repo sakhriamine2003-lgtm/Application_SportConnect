@@ -16,6 +16,7 @@ class CreeClub extends Controller
             $validationData = $request->validate([
                 'nom' => ['required', 'string', 'max:255'],
                 'ville' => ['required', 'string', 'max:255'],
+                'sport' => ['required', 'string', 'in:Football,Basketball,Handball,Volleyball'],
                 'description' => ['required', 'string'],
             ]);
 

@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, Clock3, FilePenLine, FileText, Plus, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
+import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, Clock3, Dumbbell, FilePenLine, FileText, Plus, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import api from '../axios/axios';
 import { getInitials } from '../utils/initials';
+import { SPORTS } from '../utils/sports';
 
 const emptyForm = {
   title: '',
+  sport: '',
   date: '',
   description: '',
 };
@@ -20,6 +22,7 @@ export default function AfficherOffres({ isAdmin = false }) {
   const [submitState, setSubmitState] = useState('');
   const [candidatures, setCandidatures] = useState([]);
   const [applicationState, setApplicationState] = useState('');
+  const [sportFilter, setSportFilter] = useState('');
 
   const fetchOffres = async () => {
     try {
@@ -122,6 +125,7 @@ export default function AfficherOffres({ isAdmin = false }) {
     setEditingId(offre.id);
     setForm({
       title: offre.title,
+      sport: offre.sport || '',
       date: offre.date,
       description: offre.description,
     });
@@ -138,6 +142,13 @@ export default function AfficherOffres({ isAdmin = false }) {
       setError(err.response?.data?.message || 'Impossible de supprimer cette offre.');
     }
   };
+
+  const sports = useMemo(
+    () => [...new Set(offres.map((offre) => offre.sport).filter(Boolean))],
+    [offres]
+  );
+
+  const displayedOffres = sportFilter ? offres.filter((offre) => offre.sport === sportFilter) : offres;
 
   const dashboardPath = isAdmin ? '/dashboardAdmin' : '/dashboardSportif';
 
@@ -193,6 +204,22 @@ export default function AfficherOffres({ isAdmin = false }) {
               </div>
 
               <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Sport</label>
+                <select
+                  name="sport"
+                  value={form.sport}
+                  onChange={handleChange}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:border-lime-500 focus:ring-2 focus:ring-lime-100"
+                  required
+                >
+                  <option value="" disabled>Sélectionnez un sport</option>
+                  {SPORTS.map((sport) => (
+                    <option key={sport} value={sport}>{sport}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">Date</label>
                 <input
                   type="date"
@@ -243,19 +270,46 @@ export default function AfficherOffres({ isAdmin = false }) {
             </form>
           )}
 
+          {sports.length > 0 && (
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"><Dumbbell size={14} className="text-lime-600" /> Filtrer par sport :</p>
+              <button
+                type="button"
+                onClick={() => setSportFilter('')}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${sportFilter === '' ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                Tous
+              </button>
+              {sports.map((sport) => (
+                <button
+                  key={sport}
+                  type="button"
+                  onClick={() => setSportFilter(sport)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${sportFilter === sport ? 'bg-lime-400 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                >
+                  {sport}
+                </button>
+              ))}
+            </div>
+          )}
+
           {loading ? (
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-500">Chargement des offres...</div>
           ) : error ? (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-          ) : offres.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-500">Aucune offre disponible pour le moment.</div>
+          ) : displayedOffres.length === 0 ? (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-slate-500">
+              {sportFilter ? `Aucune offre pour le sport "${sportFilter}".` : 'Aucune offre disponible pour le moment.'}
+            </div>
           ) : (
             <div className="grid gap-5 md:grid-cols-2">
-              {offres.map((offre) => (
+              {displayedOffres.map((offre) => (
                 <article key={offre.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.12em] text-lime-600">Offre</p>
+                      <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-lime-600">
+                        Offre {offre.sport && <span className="rounded-full bg-lime-100 px-2 py-0.5 text-[11px] font-bold text-lime-700">{offre.sport}</span>}
+                      </p>
                       <h2 className="mt-3 text-2xl font-black text-slate-950">{offre.title}</h2>
                     </div>
 

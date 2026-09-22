@@ -15,7 +15,7 @@ class PortfolioController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'age' => 'required|integer',
-            'sport' => 'required|string',
+            'sport' => 'required|string|in:Football,Basketball,Handball,Volleyball',
             'niveau' => 'required|string',
             'position' => 'required|string',
             'equipe' => 'nullable|string',

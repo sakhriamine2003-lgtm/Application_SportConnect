@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Building2, FileText, MapPin, Plus } from 'lucide-react';
+import { ArrowLeft, Building2, Dumbbell, FileText, MapPin, Plus } from 'lucide-react';
 import api from '../axios/axios';
+import { SPORTS } from '../utils/sports';
 
 export default function CreerClub() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nom: '', ville: '', description: '' });
+  const [form, setForm] = useState({ nom: '', ville: '', sport: '', description: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -30,7 +31,7 @@ export default function CreerClub() {
       });
 
       setMessage(response.data?.message || 'Club créé avec succès.');
-      setForm({ nom: '', ville: '', description: '' });
+      setForm({ nom: '', ville: '', sport: '', description: '' });
     } catch (err) {
       setError(err.response?.data?.message || 'Erreur lors de la création du club.');
     } finally {
@@ -81,6 +82,22 @@ export default function CreerClub() {
                 placeholder="Ex : Casablanca"
                 required
               />
+            </div>
+
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"><Dumbbell size={16} className="text-lime-600" /> Sport</label>
+              <select
+                name="sport"
+                value={form.sport}
+                onChange={handleChange}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
+                required
+              >
+                <option value="" disabled>Sélectionnez un sport</option>
+                {SPORTS.map((sport) => (
+                  <option key={sport} value={sport}>{sport}</option>
+                ))}
+              </select>
             </div>
 
             <div>
