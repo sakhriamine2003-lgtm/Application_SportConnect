@@ -8,6 +8,7 @@ import DashboardAdmin from './DashboardAdmin/DashboardAdmin';
 import AffichageProfil from './profil/AffichageProfil';
 import AfficherPortfolio from './DashboardSportif/GestionPortfolio/AfficherPortfolio';
 import CreeProfil from './DashboardSportif/GestionPortfolio/CreePortfolio';
+import VoirPortfolioSportif from './DashboardAdmin/GestionPortfolio/VoirPortfolioSportif';
 import AfficherClub from './club/AfficherClub';
 import CreerClub from './club/CreerClub';
 import AfficherOffres from './offres/AfficherOffres';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/dashboardAdmin/clubs/ajouter" element={<RoleRoute allowedRole="admin"><CreerClub /></RoleRoute>} />
         <Route path="/dashboardAdmin/offres" element={<RoleRoute allowedRole="admin"><AfficherOffres isAdmin /></RoleRoute>} />
         <Route path="/dashboardAdmin/candidatures" element={<RoleRoute allowedRole="admin"><AfficherCandidatures /></RoleRoute>} />
+        <Route path="/dashboardAdmin/sportifs/:id/portfolio" element={<RoleRoute allowedRole="admin"><VoirPortfolioSportif /></RoleRoute>} />
         <Route path="/dashboardSportif" element={<RoleRoute allowedRole="sportif"><DashboardSportif /></RoleRoute>} />
         <Route path="/dashboardSportif/profil" element={<RoleRoute allowedRole="sportif"><AffichageProfil /></RoleRoute>} />
         <Route path="/dashboardSportif/portfolio" element={<RoleRoute allowedRole="sportif"><AfficherPortfolio /></RoleRoute>} />

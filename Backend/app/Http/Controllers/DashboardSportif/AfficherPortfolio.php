@@ -21,4 +21,17 @@ class AfficherPortfolio extends Controller
        return response()->json($portfolio);
 
     }
+
+    public function afficherPortfolioParUser($userId)
+    {
+        $portfolio = Portfolio::where('user_id', $userId)->first();
+
+        if (!$portfolio) {
+            return response()->json([
+                'message' => 'Aucun portfolio trouvé pour ce sportif.',
+            ], 404);
+        }
+
+        return response()->json($portfolio);
+    }
 }

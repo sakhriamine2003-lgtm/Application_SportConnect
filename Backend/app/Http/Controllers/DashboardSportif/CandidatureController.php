@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DashboardSportif;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidature;
+use App\Models\Message;
 use App\Models\OffreRecrutement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -69,9 +70,40 @@ class CandidatureController extends Controller
 
         $candidature->update($validated);
 
+        $candidature->loadMissing(['user', 'offreRecrutement']);
+
+        Message::create([
+            'user_id' => $candidature->user_id,
+            'content' => $this->buildStatusMessage($candidature),
+        ]);
+
         return response()->json([
             'message' => 'Réponse envoyée au sportif.',
             'data' => $candidature->fresh(['offreRecrutement', 'user.portfolio']),
         ]);
+    }
+
+    /**
+     * Construit un message professionnel selon le statut de la candidature.
+     */
+    private function buildStatusMessage(Candidature $candidature): string
+    {
+        $sportifName = $candidature->user->name ?? 'Sportif';
+        $offreTitle = $candidature->offreRecrutement->title ?? 'notre offre';
+
+        return match ($candidature->status) {
+            'accepted' => "Bonjour {$sportifName},\n\n"
+                . "Nous avons le plaisir de vous informer que votre candidature pour l'offre « {$offreTitle} » a été acceptée.\n\n"
+                . "Notre équipe vous contactera prochainement afin de vous communiquer les prochaines étapes.\n\n"
+                . "Cordialement,\nL'équipe SportConnect",
+            'rejected' => "Bonjour {$sportifName},\n\n"
+                . "Nous vous remercions pour l'intérêt porté à l'offre « {$offreTitle} ».\n\n"
+                . "Après étude de votre candidature, nous ne donnerons pas suite pour le moment. Nous vous encourageons à consulter nos autres offres.\n\n"
+                . "Cordialement,\nL'équipe SportConnect",
+            default => "Bonjour {$sportifName},\n\n"
+                . "Votre candidature pour l'offre « {$offreTitle} » est toujours en cours d'examen.\n\n"
+                . "Nous reviendrons vers vous dès qu'une décision sera prise.\n\n"
+                . "Cordialement,\nL'équipe SportConnect",
+        };
     }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardSportif\AfficherPortfolio;
 use App\Http\Controllers\DashboardAdmin\club\AfficherClub;
 use App\Http\Controllers\DashboardSportif\OffreRecrutementController;
 use App\Http\Controllers\DashboardSportif\CandidatureController;
+use App\Http\Controllers\DashboardSportif\MessageController;
 
 Route::post('/login', [Login::class, 'loginUser']);
 Route::post('/register', [Register::class, 'Register']);
@@ -30,6 +31,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/portfolio', [PortfolioController::class, 'ajouterPortfolio']);
         Route::post('/offres/{offre}/candidatures', [CandidatureController::class, 'store']);
         Route::get('/mes-candidatures', [CandidatureController::class, 'mine']);
+        Route::get('/messages', [MessageController::class, 'index']);
+        Route::patch('/messages/{message}/read', [MessageController::class, 'markRead']);
+        Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -50,6 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json($sportifs);
     })->middleware('role:admin');
+
+    Route::get('/admin/sportifs/{userId}/portfolio', [AfficherPortfolio::class, 'afficherPortfolioParUser'])->middleware('role:admin');
 
     Route::get('/offres', [OffreRecrutementController::class, 'index']);
     Route::post('/offres', [OffreRecrutementController::class, 'store'])->middleware('role:admin');

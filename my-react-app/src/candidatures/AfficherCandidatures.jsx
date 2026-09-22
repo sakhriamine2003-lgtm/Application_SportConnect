@@ -96,11 +96,14 @@ export default function AfficherCandidatures() {
                       <span className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${config.className}`}><StatusIcon size={14} /> {config.label}</span>
                     </div>
 
+                    <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-200 pt-4">
+                      <button type="button" onClick={() => navigate(`/dashboardAdmin/sportifs/${candidature.user?.id}/portfolio`)} className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-lime-300 hover:bg-lime-50"><UserRound size={16} /> Voir le profil</button>
+                    </div>
+
                     {candidature.status === 'pending' && (
                       <div className="mt-5 flex flex-wrap gap-3 border-t border-slate-200 pt-4">
                         <button type="button" disabled={updatingId === candidature.id} onClick={() => respond(candidature.id, 'accepted')} className="inline-flex items-center gap-2 rounded-lg bg-lime-400 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-lime-300 disabled:cursor-wait disabled:opacity-60"><ThumbsUp size={16} /> Accepter</button>
                         <button type="button" disabled={updatingId === candidature.id} onClick={() => respond(candidature.id, 'rejected')} className="inline-flex items-center gap-2 rounded-lg bg-red-100 px-4 py-2.5 text-sm font-bold text-red-700 transition hover:bg-red-200 disabled:cursor-wait disabled:opacity-60"><ThumbsDown size={16} /> Refuser</button>
-                        <button type="button" onClick={() => navigate('/dashboardAdmin')} className="ml-auto inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-950"><UserRound size={16} /> Voir les sportifs</button>
                       </div>
                     )}
                   </article>

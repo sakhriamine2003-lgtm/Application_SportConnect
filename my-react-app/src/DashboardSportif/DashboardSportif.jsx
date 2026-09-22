@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Bell, BriefcaseBusiness, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, Trophy, UserRound } from "lucide-react";
+import { Activity, Bell, BriefcaseBusiness, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, Trash2, Trophy, UserRound } from "lucide-react";
 import api from "../axios/axios";
 
 export default function DashboardSportif() {
   const navigate = useNavigate();
   const [offres, setOffres] = useState([]);
   const [loadingOffres, setLoadingOffres] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     const fetchOffres = async () => {
@@ -25,6 +28,55 @@ export default function DashboardSportif() {
 
     fetchOffres();
   }, []);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const token = localStorage.getItem("sport_connect_token");
+        const response = await api.get("/messages", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMessages(response.data?.data || []);
+        setUnreadCount(response.data?.unread_count || 0);
+      } catch (error) {
+        console.error('Erreur chargement messages:', error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  const handleOpenNotifications = async () => {
+    setShowNotifications((prev) => !prev);
+
+    const unread = messages.filter((message) => !message.read_at);
+    if (unread.length === 0) return;
+
+    try {
+      const token = localStorage.getItem("sport_connect_token");
+      await Promise.all(
+        unread.map((message) => api.patch(`/messages/${message.id}/read`, {}, {
+          headers: { Authorization: `Bearer ${token}` },
+        }))
+      );
+      setMessages((prev) => prev.map((message) => ({ ...message, read_at: message.read_at || new Date().toISOString() })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Erreur lors du marquage des messages:', error);
+    }
+  };
+
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      const token = localStorage.getItem("sport_connect_token");
+      await api.delete(`/messages/${messageId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMessages((prev) => prev.filter((message) => message.id !== messageId));
+    } catch (error) {
+      console.error('Erreur lors de la suppression du message:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -91,9 +143,44 @@ export default function DashboardSportif() {
             <p className="mt-2 text-sm text-slate-500">Suivez votre parcours et vos opportunités sportives.</p>
           </div>
           <div className="flex items-center gap-4">
-            <button type="button" aria-label="Notifications" className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600">
-              <Bell size={14} /> Notifications
-            </button>
+            <div className="relative">
+              <button
+                type="button"
+                aria-label="Notifications"
+                onClick={handleOpenNotifications}
+                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600"
+              >
+                <Bell size={14} /> Notifications
+                {unreadCount > 0 && (
+                  <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-black text-white">+{unreadCount}</span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 z-10 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-200/70">
+                  <p className="px-2 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Messages</p>
+                  {messages.length === 0 ? (
+                    <p className="px-2 py-3 text-sm text-slate-500">Aucun message pour le moment.</p>
+                  ) : (
+                    <div className="max-h-80 space-y-2 overflow-y-auto">
+                      {messages.map((message) => (
+                        <div key={message.id} className="relative whitespace-pre-line rounded-xl bg-slate-50 p-3 pr-9 text-sm leading-6 text-slate-700">
+                          {message.content}
+                          <button
+                            type="button"
+                            aria-label="Supprimer le message"
+                            onClick={() => handleDeleteMessage(message.id)}
+                            className="absolute right-2 top-2 rounded-lg p-1 text-slate-400 transition hover:bg-red-100 hover:text-red-600"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div>
               <span className="font-semibold text-slate-800">Amine</span>

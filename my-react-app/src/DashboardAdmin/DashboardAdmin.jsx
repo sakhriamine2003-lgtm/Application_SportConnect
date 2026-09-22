@@ -230,6 +230,14 @@ export default function DashboardAdmin() {
                       <p className="flex items-center gap-2 rounded-lg bg-white p-2"><span className="w-5 shrink-0 text-center text-xs font-black text-lime-600">NI</span><span><strong className="block text-slate-400">Niveau</strong>{portfolio.niveau || '—'}</span></p>
                       <p className="flex items-center gap-2 rounded-lg bg-white p-2"><span className="w-5 shrink-0 text-center text-xs font-black text-lime-600">VI</span><span><strong className="block text-slate-400">Ville</strong>{portfolio.ville || '—'}</span></p>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/dashboardAdmin/sportifs/${sportif.id}/portfolio`)}
+                      className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-400 hover:text-slate-950"
+                    >
+                      <UserRound size={15} /> Voir le profil
+                    </button>
                   </article>
                 );
               })}
