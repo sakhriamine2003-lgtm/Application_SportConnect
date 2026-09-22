@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Dumbbell, KeyRound, Mail, ShieldCheck, UserRound } from "lucide-react";
 import api from "../axios/axios";
 
 function Register() {
@@ -44,7 +45,7 @@ function Register() {
 
     } catch (error) {
       setError(
-        error.response?.data?.message ||
+
         "Impossible de créer le compte."
       );
 
@@ -54,36 +55,38 @@ function Register() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 flex items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-10">
       <div className="w-full max-w-md">
 
         {/* Logo / Titre */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center p-2 rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/30 mb-4">
-            <span className="text-2xl font-bold text-white">SportConnect</span>
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-lime-400">
+            <Dumbbell size={26} />
           </div>
 
-          <h1 className="text-3xl font-bold text-white">
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-lime-600">Sport Connect</p>
+
+          <h1 className="text-3xl font-black text-slate-950">
             Créer un compte
           </h1>
 
-          <p className="text-slate-400 mt-2">
+          <p className="mt-2 text-sm text-slate-500">
             Rejoignez la communauté SportConnect
           </p>
         </div>
 
         {/* Card */}
-        <section className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+        <section className="rounded-2xl bg-white p-8 shadow-xl shadow-slate-200/70">
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* NAME */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-slate-200 mb-2"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
               >
-                Nom complet
+                <UserRound size={16} className="text-lime-600" /> Nom complet
               </label>
 
               <input
@@ -94,7 +97,7 @@ function Register() {
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
               />
             </div>
 
@@ -102,9 +105,9 @@ function Register() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-200 mb-2"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
               >
-                Adresse email
+                <Mail size={16} className="text-lime-600" /> Adresse email
               </label>
 
               <input
@@ -115,7 +118,7 @@ function Register() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
               />
             </div>
 
@@ -123,9 +126,9 @@ function Register() {
             <div>
               <label
                 htmlFor="role_user"
-                className="block text-sm font-medium text-slate-200 mb-2"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
               >
-                Rôle
+                <ShieldCheck size={16} className="text-lime-600" /> Rôle
               </label>
 
               <select
@@ -134,7 +137,7 @@ function Register() {
                 value={form.role_user}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
               >
                 <option value="" disabled>Sélectionnez votre rôle</option>
                 <option value="sportif">Sportif</option>
@@ -147,9 +150,9 @@ function Register() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-200 mb-2"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
               >
-                Mot de passe
+                <KeyRound size={16} className="text-lime-600" /> Mot de passe
               </label>
 
               <input
@@ -161,7 +164,7 @@ function Register() {
                 onChange={handleChange}
                 minLength={8}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
               />
             </div>
 
@@ -169,9 +172,9 @@ function Register() {
             <div>
               <label
                 htmlFor="password_confirmation"
-                className="block text-sm font-medium text-slate-200 mb-2"
+                className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
               >
-                Confirmer le mot de passe
+                <KeyRound size={16} className="text-lime-600" /> Confirmer le mot de passe
               </label>
 
               <input
@@ -183,7 +186,7 @@ function Register() {
                 onChange={handleChange}
                 minLength={8}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
               />
             </div>
 
@@ -191,7 +194,7 @@ function Register() {
             {error && (
               <div
                 role="alert"
-                className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+                className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
               >
                 {error}
               </div>
@@ -201,16 +204,16 @@ function Register() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-blue-600 py-3.5 font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 hover:shadow-blue-500/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-xl bg-slate-950 py-3.5 font-bold text-white transition hover:bg-lime-400 hover:text-slate-950 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Création..." : "S'inscrire"}
             </button>
           </form>
 
           {/* Conditions */}
-          <p className="text-center text-xs text-slate-500 mt-6 leading-relaxed">
+          <p className="mt-6 text-center text-xs leading-relaxed text-slate-400">
             En vous inscrivant, vous acceptez nos{" "}
-            <span className="text-slate-400 hover:text-white cursor-pointer">
+            <span className="cursor-pointer text-slate-500 hover:text-slate-950">
               conditions d'utilisation
             </span>.
           </p>
@@ -219,7 +222,7 @@ function Register() {
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="mt-4 w-full rounded-xl border border-blue-500 py-3 font-semibold text-blue-400 transition hover:bg-blue-500/10"
+            className="mt-4 w-full rounded-xl border border-slate-200 py-3 font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
           >
             J'ai déjà un compte
           </button>

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BriefcaseBusiness, Shield, UserRound, Users } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import api from '../axios/axios';
+import { getInitials } from '../utils/initials';
 
 export default function DashboardAdmin() {
   const [activeItem, setActiveItem] = useState('Dashboard');
@@ -63,21 +65,39 @@ export default function DashboardAdmin() {
             <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Bonjour, Admin</h1>
             <p className="mt-2 text-sm text-slate-500">Voici ce qui se passe sur votre plateforme aujourd’hui.</p>
           </div>
-          <button className="flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-lime-300 hover:bg-lime-50" type="button">
-            Nouvelle offre
-          </button>
+          <div className="flex items-center gap-4">
+            <button className="flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-lime-300 hover:bg-lime-50" type="button">
+              Nouvelle offre
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div>
+              <span className="font-semibold text-slate-800">Admin</span>
+            </div>
+          </div>
         </header>
 
-        <section className="relative mb-6 overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-200/70 sm:p-8">
+        <div className="space-y-6">
+        <section className="relative overflow-hidden rounded-2xl bg-slate-950 p-6 text-white shadow-xl shadow-slate-200/70 sm:p-8">
           <img src="https://images.unsplash.com/photo-1518600506278-4e8ef466b810?auto=format&fit=crop&w=1400&q=85" alt="Terrain de football éclairé" className="absolute inset-0 h-full w-full object-cover opacity-35" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
-          <div className="relative max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Pilotage sportif</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Toute votre activité, au même endroit.</h2><p className="mt-2 text-sm leading-6 text-slate-300">Suivez les clubs, les sportifs et les opportunités de recrutement de votre plateforme.</p></div>
+          <div className="relative max-w-xl">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Pilotage sportif</p>
+            <h2 className="mt-2 text-2xl font-black sm:text-3xl">Toute votre activité, au même endroit.</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-300">Suivez les clubs, les sportifs et les opportunités de recrutement de votre plateforme.</p>
+            <button type="button" onClick={() => navigate('/dashboardAdmin/candidatures')} className="mt-5 inline-flex items-center gap-2 rounded-lg bg-lime-400 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-lime-300">Voir les candidatures</button>
+          </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+        {activeItem !== 'Dashboard' && activeItem !== 'Déconnexion' && (
+          <div className="rounded-2xl border border-lime-200 bg-lime-50 px-5 py-4 text-sm text-lime-800">
+            Section <strong>{activeItem}</strong> sélectionnée. Les données de cette vue seront bientôt disponibles.
+          </div>
+        )}
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><span className="text-xs font-black">CA</span> Recrutement</p>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><Users size={15} /> Recrutement</p>
               <h2 className="mt-2 text-xl font-semibold text-slate-950">Candidatures des sportifs</h2>
               <p className="mt-2 text-sm text-slate-500">Consultez les demandes reçues et acceptez ou refusez chaque candidature.</p>
             </div>
@@ -85,16 +105,10 @@ export default function DashboardAdmin() {
           </div>
         </section>
 
-        {activeItem !== 'Dashboard' && activeItem !== 'Déconnexion' && (
-          <div className="mb-6 rounded-2xl border border-lime-200 bg-lime-50 px-5 py-4 text-sm text-lime-800">
-            Section <strong>{activeItem}</strong> sélectionnée. Les données de cette vue seront bientôt disponibles.
-          </div>
-        )}
-
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><span className="text-xs font-black">CL</span> Gestion des clubs</p>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><Shield size={15} /> Gestion des clubs</p>
               <h2 className="mt-2 text-xl font-semibold text-slate-950">Club</h2>
             </div>
             <div className="rounded-full bg-lime-50 px-3 py-1 text-xs font-semibold text-lime-700">12 clubs actifs</div>
@@ -125,10 +139,10 @@ export default function DashboardAdmin() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><span className="text-xs font-black">OF</span> Gestion des offres</p>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><BriefcaseBusiness size={15} /> Gestion des offres</p>
               <h2 className="mt-2 text-xl font-semibold text-slate-950">Offres de recrutement</h2>
             </div>
           </div>
@@ -147,10 +161,10 @@ export default function DashboardAdmin() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><span className="text-xs font-black">SP</span> Sportifs disponibles</p>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><UserRound size={15} /> Sportifs disponibles</p>
               <h2 className="mt-2 text-xl font-semibold text-slate-950">Liste des sportifs</h2>
             </div>
             <span className="rounded-full bg-lime-50 px-3 py-1 text-xs font-semibold text-lime-700">{sportifs.length} inscrit(s)</span>
@@ -167,11 +181,7 @@ export default function DashboardAdmin() {
                 return (
                   <article key={sportif.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-lime-300 hover:bg-white hover:shadow-lg">
                     <div className="flex items-center gap-4">
-                      <img
-                        src={portfolio.photo || 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=200&q=80'}
-                        alt={sportif.name}
-                        className="h-16 w-16 rounded-full object-cover border-2 border-white shadow-sm"
-                      />
+                      <div aria-label={`Initiales de ${sportif.name}`} className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-lime-400 text-lg font-black text-slate-950 shadow-sm">{getInitials(portfolio.prenom || sportif.name, portfolio.nom)}</div>
                       <div>
                         <h3 className="text-base font-bold text-slate-900">{sportif.name}</h3>
                         <p className="text-sm text-slate-500">{portfolio.sport || 'Sport non précisé'}</p>
@@ -191,6 +201,7 @@ export default function DashboardAdmin() {
             </div>
           )}
         </section>
+        </div>
 
       </main>
     </div>

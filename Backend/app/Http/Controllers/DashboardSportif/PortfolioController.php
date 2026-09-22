@@ -24,16 +24,16 @@ class PortfolioController extends Controller
             'poids' => 'required|numeric',
             'experience' => 'required|string',
             'palmares' => 'required|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $data['user_id'] = $request->user()->id;
-        Portfolio::where('user_id', $data['user_id'])->delete();
-
-        $portfolio = Portfolio::create($data);
+        $portfolio = Portfolio::updateOrCreate(
+            ['user_id' => $data['user_id']],
+            $data,
+        );
 
         return response()->json([
-            'message' => 'Portfolio créé avec succès',
+            'message' => 'Portfolio enregistré avec succès.',
             'data' => $portfolio
         ]);
     }

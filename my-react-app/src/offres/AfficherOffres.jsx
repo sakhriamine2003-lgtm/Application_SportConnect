@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, Clock3, FilePenLine, FileText, Plus, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import api from '../axios/axios';
+import { getInitials } from '../utils/initials';
 
 const emptyForm = {
   title: '',
@@ -306,7 +307,7 @@ export default function AfficherOffres({ isAdmin = false }) {
                       ) : candidatures.filter((candidature) => candidature.offre_recrutement_id === offre.id).map((candidature) => (
                         <div key={candidature.id} className="rounded-xl border border-slate-200 bg-white p-3">
                           <div className="flex items-center gap-3">
-                            <img src={candidature.user?.portfolio?.photo || 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=100&q=80'} alt="Profil du sportif" className="h-10 w-10 rounded-full object-cover" />
+                            <div aria-label="Initiales du sportif" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-400 text-xs font-black text-slate-950">{getInitials(candidature.user?.portfolio?.prenom || candidature.user?.name, candidature.user?.portfolio?.nom)}</div>
                             <div className="min-w-0">
                               <p className="font-bold text-slate-900">{candidature.user?.portfolio?.prenom} {candidature.user?.portfolio?.nom}</p>
                               <p className="text-xs text-slate-500">{candidature.user?.portfolio?.sport || candidature.user?.email}</p>

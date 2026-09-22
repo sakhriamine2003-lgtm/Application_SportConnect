@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Clock3, ThumbsDown, ThumbsUp, UserRound, XCircle } from 'lucide-react';
 import api from '../axios/axios';
+import { getInitials } from '../utils/initials';
 
 const statusConfig = {
   pending: { label: 'En attente', className: 'bg-amber-100 text-amber-800', Icon: Clock3 },
@@ -85,7 +86,7 @@ export default function AfficherCandidatures() {
                 return (
                   <article key={candidature.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                     <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                      <img src={portfolio.photo || 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=200&q=80'} alt={athleteName} className="h-16 w-16 rounded-full border-2 border-white object-cover shadow-sm" />
+                      <div aria-label={`Initiales de ${athleteName}`} className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-lime-400 text-lg font-black text-slate-950 shadow-sm">{getInitials(portfolio.prenom || candidature.user?.name, portfolio.nom)}</div>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-bold uppercase tracking-wider text-lime-600">{candidature.offre_recrutement?.title || 'Offre de recrutement'}</p>
                         <h2 className="mt-1 text-lg font-black text-slate-950">{athleteName}</h2>

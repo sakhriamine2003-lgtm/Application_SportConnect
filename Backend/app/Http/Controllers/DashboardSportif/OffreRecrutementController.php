@@ -21,7 +21,7 @@ class OffreRecrutementController extends Controller
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
 
-        if (! $user || $userRole !== 'admin') {
+        if ($userRole !== 'admin') {
             return response()->json([
                 'message' => 'Seuls les administrateurs peuvent créer des offres.',
             ], 403);
@@ -51,7 +51,7 @@ class OffreRecrutementController extends Controller
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
 
-        if (! $user || $userRole !== 'admin') {
+        if ($userRole !== 'admin') {
             return response()->json([
                 'message' => 'Seuls les administrateurs peuvent modifier des offres.',
             ], 403);
@@ -76,7 +76,7 @@ class OffreRecrutementController extends Controller
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;
 
-        if (! $user || $userRole !== 'admin') {
+        if ($userRole !== 'admin') {
             return response()->json([
                 'message' => 'Seuls les administrateurs peuvent supprimer des offres.',
             ], 403);

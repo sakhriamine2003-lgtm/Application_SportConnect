@@ -20,8 +20,6 @@ class CreeClub extends Controller
             ]);
 
 
-
-
             $validationData['user_id'] = Auth::id();
 
             $club = Club::create($validationData);

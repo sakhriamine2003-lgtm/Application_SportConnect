@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
 
 class CandidatureController extends Controller
 {
-    public function store(Request $request, OffreRecrutement $offre): JsonResponse
+    public function store(Request $request, OffreRecrutement $offre)
     {
         $sportif = $request->user();
 
@@ -41,7 +41,8 @@ class CandidatureController extends Controller
         ], 201);
     }
 
-    public function mine(Request $request): JsonResponse
+
+    public function mine(Request $request)
     {
         return response()->json(
             Candidature::with('offreRecrutement')
@@ -51,7 +52,7 @@ class CandidatureController extends Controller
         );
     }
 
-    public function index(): JsonResponse
+    public function index()
     {
         return response()->json(
             Candidature::with(['offreRecrutement', 'user.portfolio'])
@@ -60,7 +61,7 @@ class CandidatureController extends Controller
         );
     }
 
-    public function updateStatus(Request $request, Candidature $candidature): JsonResponse
+    public function updateStatus(Request $request, Candidature $candidature)
     {
         $validated = $request->validate([
             'status' => ['required', Rule::in(['accepted', 'rejected'])],

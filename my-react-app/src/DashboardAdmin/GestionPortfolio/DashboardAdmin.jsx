@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import api from '../axios/axios';
+import { getInitials } from '../utils/initials';
 
 export default function DashboardAdmin() {
   const [activeItem, setActiveItem] = useState('Dashboard');
@@ -132,11 +133,7 @@ export default function DashboardAdmin() {
                 return (
                   <article key={sportif.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-lime-300 hover:bg-white hover:shadow-lg">
                     <div className="flex items-center gap-4">
-                      <img
-                        src={portfolio.photo || 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=200&q=80'}
-                        alt={sportif.name}
-                        className="h-16 w-16 rounded-full object-cover border-2 border-white shadow-sm"
-                      />
+                      <div aria-label={`Initiales de ${sportif.name}`} className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white bg-lime-400 text-lg font-black text-slate-950 shadow-sm">{getInitials(portfolio.prenom || sportif.name, portfolio.nom)}</div>
                       <div>
                         <h3 className="text-base font-bold text-slate-900">{sportif.name}</h3>
                         <p className="text-sm text-slate-500">{portfolio.sport || 'Sport non précisé'}</p>

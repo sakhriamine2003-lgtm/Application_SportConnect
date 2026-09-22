@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Activity, Bell, ClipboardList, Dumbbell, LayoutDashboard, Trophy, UserRound } from "lucide-react";
 import api from "../axios/axios";
 
 export default function DashboardSportif() {
@@ -20,17 +21,118 @@ export default function DashboardSportif() {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 lg:flex">
       <aside className="flex w-full shrink-0 flex-col bg-slate-950 px-4 py-5 text-slate-300 lg:min-h-screen lg:w-64">
-        <div className="mb-10 flex items-center gap-3 px-2"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-400 text-sm font-black text-slate-950">SC</div><div><p className="text-sm font-bold tracking-wide text-white">Sport Connect</p><p className="text-xs text-slate-500">Espace sportif</p></div></div>
-        <nav className="flex-1 space-y-1" aria-label="Navigation principale"><p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">Mon espace</p><button type="button" onClick={() => navigate("/dashboardSportif")} className="flex w-full items-center gap-3 rounded-xl bg-lime-400 px-3 py-3 text-left text-sm font-semibold text-slate-950 shadow-lg shadow-lime-950/30"><span className="w-5 text-center text-xs font-black">01</span>Dashboard</button><button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">02</span>Profil</button><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">03</span>Résultats</a><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">04</span>Sports</a><a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white"><span className="w-5 text-center text-xs font-black">05</span>Activités</a></nav>
-        <div className="mt-8 border-t border-white/10 pt-5"><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 font-black text-slate-950">A</div><div><p className="font-semibold text-white">Amine</p><p className="text-sm text-slate-500">Sportif</p></div></div><button type="button" onClick={handleLogout} className="mt-4 w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-red-950/40 hover:text-red-300">Déconnexion</button></div>
+        <div className="mb-10 flex items-center gap-3 px-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-400 text-sm font-black text-slate-950">SC</div>
+          <div>
+            <p className="text-sm font-bold tracking-wide text-white">Sport Connect</p>
+            <p className="text-xs text-slate-500">Espace sportif</p>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-1" aria-label="Navigation principale">
+          <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">Mon espace</p>
+          <button type="button" onClick={() => navigate("/dashboardSportif")} className="flex w-full items-center gap-3 rounded-xl bg-lime-400 px-3 py-3 text-left text-sm font-semibold text-slate-950 shadow-lg shadow-lime-950/30">
+            <LayoutDashboard size={16} /> Dashboard
+          </button>
+          <button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
+            <UserRound size={16} /> Profil
+          </button>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
+            <Trophy size={16} /> Résultats
+          </a>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
+            <Dumbbell size={16} /> Sports
+          </a>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
+            <Activity size={16} /> Activités
+          </a>
+        </nav>
+
+        <div className="mt-8 border-t border-white/10 pt-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-lime-400 font-black text-slate-950">A</div>
+            <div>
+              <p className="font-semibold text-white">Amine</p>
+              <p className="text-sm text-slate-500">Sportif</p>
+            </div>
+          </div>
+          <button type="button" onClick={handleLogout} className="mt-4 w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-red-950/40 hover:text-red-300">
+            Déconnexion
+          </button>
+        </div>
       </aside>
+
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-10 lg:py-9">
-        <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-lime-600">Espace sportif</p><h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Bonjour Amine</h1><p className="mt-2 text-sm text-slate-500">Suivez votre parcours et vos opportunités sportives.</p></div><div className="flex items-center gap-4"><button type="button" aria-label="Notifications" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600">Notifications</button><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div><span className="font-semibold text-slate-800">Amine</span></div></div></header>
-        <section className="mb-6 grid gap-5 md:grid-cols-2"><div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-lime-100 text-sm font-black text-lime-700">PROFIL</div><div className="min-w-0"><h2 className="font-bold text-lg">Profil sportif</h2><p className="text-sm text-slate-500">Consulter votre profil</p></div><button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button></div><div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-sm font-black text-amber-700">RESULT</div><div className="min-w-0"><h2 className="font-bold text-lg">Résultats</h2><p className="text-sm text-slate-500">Consulter vos résultats</p></div><button type="button" className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button></div></section>
-        <section className="relative mb-6 min-h-[270px] overflow-hidden rounded-2xl bg-slate-950 p-7 text-white shadow-xl shadow-slate-300/50 sm:p-9"><img src="https://images.unsplash.com/photo-1579952363873-27f3b0541f25?auto=format&fit=crop&w=1400&q=85" alt="Match de football" className="absolute inset-0 h-full w-full object-cover opacity-45" /><div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" /><div className="relative max-w-xl"><p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Opportunités football</p><h2 className="text-3xl font-black sm:text-4xl">Trouvez votre prochaine équipe.</h2><p className="mt-3 max-w-md text-sm leading-6 text-slate-300">Découvrez les offres sportives publiées par les clubs et faites avancer votre carrière.</p><div className="mt-6 flex flex-wrap gap-3"><button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-lime-400 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-lime-300">Consulter les offres</button></div></div></section>
-        <section className="flex flex-col justify-between gap-5 rounded-2xl bg-lime-400 p-7 text-slate-950 sm:flex-row sm:items-center"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-slate-700">Réseau sportif</p><h2 className="mt-2 text-2xl font-black">Votre prochaine performance commence ici.</h2><p className="mt-2 max-w-xl text-sm text-slate-700">Construisez votre visibilité auprès des clubs et partenaires.</p></div><span className="hidden text-5xl font-black sm:block">SC</span></section>
-        <section className="mb-6 flex flex-col justify-between gap-4 rounded-2xl border border-lime-200 bg-lime-50 p-5 sm:flex-row sm:items-center"><div><p className="text-xs font-bold uppercase tracking-wider text-lime-700">Candidatures</p><h2 className="mt-1 text-xl font-black">Réponses des administrateurs</h2><p className="mt-1 text-sm text-slate-600">Consultez le statut de chacune de vos demandes.</p></div><button type="button" onClick={() => navigate('/dashboardSportif/candidatures')} className="rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir mes réponses</button></section>
+        <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div>
+            <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-lime-600">Espace sportif</p>
+            <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Bonjour Amine</h1>
+            <p className="mt-2 text-sm text-slate-500">Suivez votre parcours et vos opportunités sportives.</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button type="button" aria-label="Notifications" className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600">
+              <Bell size={14} /> Notifications
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div>
+              <span className="font-semibold text-slate-800">Amine</span>
+            </div>
+          </div>
+        </header>
+
+        <div className="space-y-6">
+          <section className="grid gap-5 md:grid-cols-2">
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-lime-100 text-lime-700"><UserRound size={22} /></div>
+              <div className="min-w-0">
+                <h2 className="text-lg font-bold">Profil sportif</h2>
+                <p className="text-sm text-slate-500">Consulter votre profil</p>
+              </div>
+              <button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button>
+            </div>
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700"><Trophy size={22} /></div>
+              <div className="min-w-0">
+                <h2 className="text-lg font-bold">Résultats</h2>
+                <p className="text-sm text-slate-500">Consulter vos résultats</p>
+              </div>
+              <button type="button" className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button>
+            </div>
+          </section>
+
+          <section className="relative min-h-[270px] overflow-hidden rounded-2xl bg-slate-950 p-7 text-white shadow-xl shadow-slate-300/50 sm:p-9">
+            <img src="https://images.unsplash.com/photo-1579952363873-27f3b0541f25?auto=format&fit=crop&w=1400&q=85" alt="Match de football" className="absolute inset-0 h-full w-full object-cover opacity-45" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
+            <div className="relative max-w-xl">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Opportunités football</p>
+              <h2 className="text-3xl font-black sm:text-4xl">Trouvez votre prochaine équipe.</h2>
+              <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">Découvrez les offres sportives publiées par les clubs et faites avancer votre carrière.</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-lime-400 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-lime-300">Consulter les offres</button>
+              </div>
+            </div>
+          </section>
+
+          <section className="flex flex-col justify-between gap-5 rounded-2xl bg-lime-400 p-7 text-slate-950 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-700">Réseau sportif</p>
+              <h2 className="mt-2 text-2xl font-black">Votre prochaine performance commence ici.</h2>
+              <p className="mt-2 max-w-xl text-sm text-slate-700">Construisez votre visibilité auprès des clubs et partenaires.</p>
+            </div>
+            <span className="hidden text-5xl font-black sm:block">SC</span>
+          </section>
+
+          <section className="flex flex-col justify-between gap-4 rounded-2xl border border-lime-200 bg-lime-50 p-5 sm:flex-row sm:items-center">
+            <div>
+              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-lime-700"><ClipboardList size={14} /> Candidatures</p>
+              <h2 className="mt-1 text-xl font-black">Réponses des administrateurs</h2>
+              <p className="mt-1 text-sm text-slate-600">Consultez le statut de chacune de vos demandes.</p>
+            </div>
+            <button type="button" onClick={() => navigate('/dashboardSportif/candidatures')} className="rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir mes réponses</button>
+          </section>
+        </div>
       </main>
     </div>
   );
 }
+

@@ -1,174 +1,135 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Dumbbell, KeyRound, Mail } from 'lucide-react';
 import api from '../axios/axios';
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await api.post('/login', { email, password });
-      const user = response.data?.user;
-      const role = String(user?.role_user || user?.role || '')
-        .trim()
-        .toLowerCase()
-        .replace(/^role_/, '');
-
-      if (response.data?.token) {
-        localStorage.setItem('sport_connect_token', response.data.token);
-      }
-
-      if (user?.role_user) {
-        localStorage.setItem('sport_connect_user_role', String(user.role_user).trim().toLowerCase());
-      } else if (user?.role) {
-        localStorage.setItem('sport_connect_user_role', String(user.role).trim().toLowerCase());
-      }
-
-      if (role === 'admin') {
-        navigate('/dashboardAdmin');
-        return;
-      }
-
-      if (role !== 'sportif') {
-        setError('Ce compte n’a pas accès au tableau de bord.');
-        return;
-      }
-
-      navigate('/dashboardSportif');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Email ou mot de passe incorrect.');
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((currentData) => ({ ...currentData, [name]: value }));
   };
 
-return (
-  <main className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 flex items-center justify-center px-4">
-    <div className="w-full max-w-md">
+  const handleSubmit = async (event) => {
+  event.preventDefault();
 
-      {/* Logo / Titre */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center p-2  rounded-2xl bg-blue-600 shadow-lg shadow-blue-600/30 mb-4">
-          <span className="text-2xl font-bold text-white ">SportConnect</span>
-        </div>
+  setLoading(true);
+  setError('');
 
-        <h1 className="text-3xl font-bold text-white">
-          Bienvenue
-        </h1>
+  try {
+    const response = await api.post('/login', formData);
 
-        <p className="text-slate-400 mt-2">
-          Connectez-vous à votre compte
-        </p>
-      </div>
+    // console.log('LOGIN RESPONSE:', response.data);
 
-      {/* Card */}
-      <section className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+    const token = response.data.token;
+    const user = response.data.user;
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+    // console.log('USER:', user);
+    // console.log('ROLE:', user.role_user);
 
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-slate-200 mb-2"
-            >
-              Adresse email
-            </label>
+    localStorage.setItem('sport_connect_token', token);
+    localStorage.setItem('sport_connect_user_role', user.role_user);
 
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="nom@exemple.com"
-              required
-              autoComplete="email"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            />
+    if (user.role_user === 'Admin') {
+      navigate('/dashboardAdmin');
+    } else if (user.role_user === 'Sportif') {
+      navigate('/dashboardSportif');
+    } else {
+      setError('Role utilisateur inconnu.');
+    }
+
+  } catch (error) {
+    console.log('LOGIN ERROR:', error);
+    console.log('SERVER ERROR:', error.response?.data);
+
+    setError(
+      error.response?.data?.message || 
+      'Email ou mot de passe incorrect.'
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
+
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4">
+      <div className="w-full max-w-md">
+        <header className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-lime-400">
+            <Dumbbell size={26} />
           </div>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-lime-600">Sport Connect</p>
+          <h1 className="text-3xl font-black text-slate-950">Connexion</h1>
+          <p className="mt-2 text-sm text-slate-500">Accédez à votre espace sportif</p>
+        </header>
 
-          {/* Password */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-slate-200"
-              >
-                Mot de passe
+        <div className="rounded-2xl bg-white p-8 shadow-xl shadow-slate-200/70">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="email" className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <Mail size={16} className="text-lime-600" /> Adresse email
               </label>
-
-              <button
-                type="button"
-                className="text-sm text-blue-400 hover:text-blue-300 transition"
-              >
-                Mot de passe oublié ?
-              </button>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="nom@exemple.com"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
+              />
             </div>
 
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="••••••••"
-              required
-              autoComplete="current-password"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-            />
-          </div>
+            <div>
+              <label htmlFor="password" className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700">
+                <KeyRound size={16} className="text-lime-600" /> Mot de passe
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none placeholder:text-slate-400 focus:border-lime-500 focus:bg-white focus:ring-2 focus:ring-lime-100"
+              />
+            </div>
 
-          {/* Error */}
-          {error && (
-            <div
-              role="alert"
-              className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400"
+            {error && (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-xl bg-slate-950 py-3 font-bold text-white transition hover:bg-lime-400 hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {error}
-            </div>
-          )}
+              {loading ? 'Connexion...' : 'Se connecter'}
+            </button>
+          </form>
 
-          {/* Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-blue-600 py-3.5 font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-500 hover:shadow-blue-500/30 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Connexion en cours..." : "Se connecter"}
-          </button>
-        </form>
-
-        {/* Conditions */}
-        <p className="text-center text-xs text-slate-500 mt-6 leading-relaxed">
-          En vous connectant, vous acceptez nos{" "}
-          <span className="text-slate-400 hover:text-white cursor-pointer">
-            conditions d'utilisation
-          </span>.
-        </p>
-
-        <button
-          type="button"
-          onClick={() => navigate('/register')}
-          className="mt-4 w-full rounded-xl border border-blue-500 py-3 font-semibold text-blue-400 transition hover:bg-blue-500/10"
-        >
-          Créer un compte
-        </button>
-      </section>
-
-      {/* Footer */}
-      <p className="text-center text-sm text-slate-500 mt-6">
-        © 2026 — Tous droits réservés
-      </p>
-    </div>
-  </main>
-);
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={() => navigate('/register')}
+              className="text-sm font-semibold text-slate-500 transition hover:text-lime-600"
+            >
+              Créer un compte
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
 }
-export default Login;
 
+export default Login;

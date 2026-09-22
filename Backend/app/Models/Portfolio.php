@@ -23,7 +23,6 @@ class Portfolio extends Model
         'poids',
         'experience',
         'palmares',
-        'photo',
     ];
 
   
