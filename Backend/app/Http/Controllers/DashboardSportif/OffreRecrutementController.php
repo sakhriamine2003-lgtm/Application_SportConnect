@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class OffreRecrutementController extends Controller
 {
-    public function index()
+    public function index() //affiche les offre de recrutement créées par les administrateurs
     {
         $offres = OffreRecrutement::latest()->get();
 
         return response()->json($offres);
     }
 
-    public function store(Request $request)
+    public function store(Request $request)   //permet aux administrateurs de créer une nouvelle offre de recrutement
     {
         $user = Auth::user();
         $userRole = $user ? strtolower(trim((string) $user->role_user)) : null;

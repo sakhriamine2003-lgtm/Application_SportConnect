@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, Clock3, Dumbbell, FilePenLine, FileText, Plus, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import api from '../axios/axios';
@@ -24,13 +24,14 @@ export default function AfficherOffres({ isAdmin = false }) {
   const [applicationState, setApplicationState] = useState('');
   const [sportFilter, setSportFilter] = useState('');
 
+  // Ajoute le token dans les headers pour les requêtes protégées
+  const authHeader = () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem('sport_connect_token')}` },
+  });
+
   const fetchOffres = async () => {
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      const response = await api.get('/offres', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const response = await api.get('/offres', authHeader());
       setOffres(response.data || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Impossible de charger les offres.');
@@ -41,11 +42,8 @@ export default function AfficherOffres({ isAdmin = false }) {
 
   const fetchCandidatures = async () => {
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      const response = await api.get(isAdmin ? '/candidatures' : '/mes-candidatures', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
+      const url = isAdmin ? '/candidatures' : '/mes-candidatures';
+      const response = await api.get(url, authHeader());
       setCandidatures(response.data || []);
     } catch (err) {
       setError(err.response?.data?.message || 'Impossible de charger les candidatures.');
@@ -61,10 +59,7 @@ export default function AfficherOffres({ isAdmin = false }) {
     setApplicationState('');
 
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      const response = await api.post(`/offres/${offreId}/candidatures`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.post(`/offres/${offreId}/candidatures`, {}, authHeader());
       setApplicationState(response.data?.message || 'Candidature envoyée.');
       fetchCandidatures();
     } catch (err) {
@@ -74,10 +69,7 @@ export default function AfficherOffres({ isAdmin = false }) {
 
   const handleStatus = async (candidatureId, status) => {
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      await api.patch(`/candidatures/${candidatureId}`, { status }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.patch(`/candidatures/${candidatureId}`, { status }, authHeader());
       fetchCandidatures();
     } catch (err) {
       setError(err.response?.data?.message || 'Impossible d’envoyer la réponse.');
@@ -102,14 +94,11 @@ export default function AfficherOffres({ isAdmin = false }) {
     setSubmitState('');
 
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-
       if (editingId) {
-        await api.put(`/offres/${editingId}`, form, config);
+        await api.put(`/offres/${editingId}`, form, authHeader());
         setSubmitState('Offre modifiée avec succès.');
       } else {
-        await api.post('/offres', form, config);
+        await api.post('/offres', form, authHeader());
         setSubmitState('Offre créée avec succès.');
       }
 
@@ -133,20 +122,15 @@ export default function AfficherOffres({ isAdmin = false }) {
 
   const handleDelete = async (id) => {
     try {
-      const token = localStorage.getItem('sport_connect_token');
-      await api.delete(`/offres/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.delete(`/offres/${id}`, authHeader());
       fetchOffres();
     } catch (err) {
       setError(err.response?.data?.message || 'Impossible de supprimer cette offre.');
     }
   };
 
-  const sports = useMemo(
-    () => [...new Set(offres.map((offre) => offre.sport).filter(Boolean))],
-    [offres]
-  );
+  // Liste des sports présents dans les offres, sans doublons
+  const sports = [...new Set(offres.map((offre) => offre.sport).filter(Boolean))];
 
   const displayedOffres = sportFilter ? offres.filter((offre) => offre.sport === sportFilter) : offres;
 
@@ -303,7 +287,12 @@ export default function AfficherOffres({ isAdmin = false }) {
             </div>
           ) : (
             <div className="grid gap-5 md:grid-cols-2">
-              {displayedOffres.map((offre) => (
+              {displayedOffres.map((offre) => {
+                // Candidature de l'utilisateur connecté et candidatures reçues pour cette offre
+                const candidature = getApplication(offre.id);
+                const offreCandidatures = candidatures.filter((c) => c.offre_recrutement_id === offre.id);
+
+                return (
                 <article key={offre.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -335,10 +324,8 @@ export default function AfficherOffres({ isAdmin = false }) {
                   <p className="mt-2 flex items-center gap-2 text-sm text-slate-500"><CalendarDays size={15} /> Date : {offre.date}</p>
                   <p className="mt-4 leading-7 text-slate-600">{offre.description}</p>
 
-                  {!isAdmin && (() => {
-                    const candidature = getApplication(offre.id);
-
-                    return candidature ? (
+                  {!isAdmin && (
+                    candidature ? (
                       <div className="mt-5 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
                         <Clock3 size={17} /> Réponse : {statusLabel[candidature.status] || candidature.status}
                       </div>
@@ -350,15 +337,15 @@ export default function AfficherOffres({ isAdmin = false }) {
                       >
                         <FileText size={17} /> Postuler avec mon portfolio
                       </button>
-                    );
-                  })()}
+                    )
+                  )}
 
                   {isAdmin && (
                     <div className="mt-5 space-y-3 border-t border-slate-200 pt-4">
                       <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Candidatures</p>
-                      {candidatures.filter((candidature) => candidature.offre_recrutement_id === offre.id).length === 0 ? (
+                      {offreCandidatures.length === 0 ? (
                         <p className="text-sm text-slate-500">Aucune candidature.</p>
-                      ) : candidatures.filter((candidature) => candidature.offre_recrutement_id === offre.id).map((candidature) => (
+                      ) : offreCandidatures.map((candidature) => (
                         <div key={candidature.id} className="rounded-xl border border-slate-200 bg-white p-3">
                           <div className="flex items-center gap-3">
                             <div aria-label="Initiales du sportif" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lime-400 text-xs font-black text-slate-950">{getInitials(candidature.user?.portfolio?.prenom || candidature.user?.name, candidature.user?.portfolio?.nom)}</div>
@@ -379,7 +366,8 @@ export default function AfficherOffres({ isAdmin = false }) {
                     </div>
                   )}
                 </article>
-              ))}
+                );
+              })}
             </div>
           )}
 

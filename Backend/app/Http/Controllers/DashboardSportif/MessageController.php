@@ -20,18 +20,6 @@ class MessageController extends Controller
         ]);
     }
 
-    public function markRead(Request $request, Message $message)
-    {
-        if ($message->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Accès refusé.'], 403);
-        }
-
-        if (! $message->read_at) {
-            $message->update(['read_at' => now()]);
-        }
-
-        return response()->json(['message' => 'Message lu.', 'data' => $message]);
-    }
 
     public function destroy(Request $request, Message $message)
     {

@@ -1,124 +1,70 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Activity, Bell, BriefcaseBusiness, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, Trash2, Trophy, UserRound } from "lucide-react";
+import {
+  Activity,
+  BriefcaseBusiness,
+  CalendarDays,
+  ClipboardList,
+  Dumbbell,
+  LayoutDashboard,
+  Trophy,
+  UserRound
+} from "lucide-react";
 import api from "../axios/axios";
+
 
 export default function DashboardSportif() {
   const navigate = useNavigate();
   const [offres, setOffres] = useState([]);
-  const [loadingOffres, setLoadingOffres] = useState(true);
-  const [messages, setMessages] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchOffres = async () => {
+    const getOffres = async () => {
       try {
         const token = localStorage.getItem("sport_connect_token");
         const response = await api.get("/offres", {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}` }
         });
-        setOffres(response.data || []);
+        setOffres(response.data);
       } catch (error) {
-        console.error('Erreur chargement offres:', error);
+        console.error("Erreur :", error);
       } finally {
-        setLoadingOffres(false);
+        setLoading(false);
       }
     };
-
-    fetchOffres();
+    getOffres();
   }, []);
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const token = localStorage.getItem("sport_connect_token");
-        const response = await api.get("/messages", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setMessages(response.data?.data || []);
-        setUnreadCount(response.data?.unread_count || 0);
-      } catch (error) {
-        console.error('Erreur chargement messages:', error);
-      }
-    };
-
-    fetchMessages();
-  }, []);
-
-  const handleOpenNotifications = async () => {
-    setShowNotifications((prev) => !prev);
-
-    const unread = messages.filter((message) => !message.read_at);
-    if (unread.length === 0) return;
-
-    try {
-      const token = localStorage.getItem("sport_connect_token");
-      await Promise.all(
-        unread.map((message) => api.patch(`/messages/${message.id}/read`, {}, {
-          headers: { Authorization: `Bearer ${token}` },
-        }))
-      );
-      setMessages((prev) => prev.map((message) => ({ ...message, read_at: message.read_at || new Date().toISOString() })));
-      setUnreadCount(0);
-    } catch (error) {
-      console.error('Erreur lors du marquage des messages:', error);
-    }
+  const logout = () => {
+    localStorage.clear();
+    navigate("/");
   };
 
-  const handleDeleteMessage = async (messageId) => {
-    try {
-      const token = localStorage.getItem("sport_connect_token");
-      await api.delete(`/messages/${messageId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMessages((prev) => prev.filter((message) => message.id !== messageId));
-    } catch (error) {
-      console.error('Erreur lors de la suppression du message:', error);
-    }
-  };
 
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("sport_connect_token");
-      await api.post("/logout", {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    } finally {
-      localStorage.removeItem("sport_connect_token");
-      localStorage.removeItem("sport_connect_user_role");
-      navigate("/");
-    }
-  };
-
+  
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 lg:flex">
+      {/* Sidebar */}
       <aside className="flex w-full shrink-0 flex-col bg-slate-950 px-4 py-5 text-slate-300 lg:min-h-screen lg:w-64">
         <div className="mb-10 flex items-center gap-3 px-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-400 text-sm font-black text-slate-950">SC</div>
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-lime-400 font-black text-slate-950">SC</div>
           <div>
-            <p className="text-sm font-bold tracking-wide text-white">Sport Connect</p>
+            <p className="text-sm font-bold text-white">Sport Connect</p>
             <p className="text-xs text-slate-500">Espace sportif</p>
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1" aria-label="Navigation principale">
-          <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">Mon espace</p>
-          <button type="button" onClick={() => navigate("/dashboardSportif")} className="flex w-full items-center gap-3 rounded-xl bg-lime-400 px-3 py-3 text-left text-sm font-semibold text-slate-950 shadow-lg shadow-lime-950/30">
+        <nav className="flex-1 space-y-1">
+          <p className="mb-3 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-600">Mon espace</p>
+          <button onClick={() => navigate("/dashboardSportif")} className="flex w-full items-center gap-3 rounded-xl bg-lime-400 px-3 py-3 text-sm font-semibold text-slate-950">
             <LayoutDashboard size={16} /> Dashboard
           </button>
-          <button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
+          <button onClick={() => navigate("/dashboardSportif/profil")} className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-white">
             <UserRound size={16} /> Profil
           </button>
-          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
-            <Trophy size={16} /> Résultats
-          </a>
-          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
-            <Dumbbell size={16} /> Sports
-          </a>
-          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 transition hover:bg-slate-900 hover:text-white">
-            <Activity size={16} /> Activités
-          </a>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-white"><Trophy size={16} /> Résultats</a>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-white"><Dumbbell size={16} /> Sports</a>
+          <a href="#" className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-400 hover:bg-slate-900 hover:text-white"><Activity size={16} /> Activités</a>
         </nav>
 
         <div className="mt-8 border-t border-white/10 pt-5">
@@ -129,119 +75,65 @@ export default function DashboardSportif() {
               <p className="text-sm text-slate-500">Sportif</p>
             </div>
           </div>
-          <button type="button" onClick={handleLogout} className="mt-4 w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 transition hover:bg-red-950/40 hover:text-red-300">
+          <button onClick={logout} className="mt-4 w-full rounded-xl px-3 py-3 text-left text-sm font-semibold text-slate-400 hover:bg-red-950/40 hover:text-red-300">
             Déconnexion
           </button>
         </div>
       </aside>
 
+      {/* Main Content */}
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-8 lg:px-10 lg:py-9">
-        <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+        <header className="mb-8 flex items-center justify-between">
           <div>
-            <p className="mb-2 text-sm font-bold uppercase tracking-[0.18em] text-lime-600">Espace sportif</p>
-            <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Bonjour Amine</h1>
-            <p className="mt-2 text-sm text-slate-500">Suivez votre parcours et vos opportunités sportives.</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-lime-600">Espace sportif</p>
+            <h1 className="text-3xl font-black text-slate-950 sm:text-4xl">Bonjour Amine</h1>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <button
-                type="button"
-                aria-label="Notifications"
-                onClick={handleOpenNotifications}
-                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-600 shadow-sm transition hover:border-lime-400 hover:text-lime-600"
-              >
-                <Bell size={14} /> Notifications
-                {unreadCount > 0 && (
-                  <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-black text-white">+{unreadCount}</span>
-                )}
-              </button>
-
-              {showNotifications && (
-                <div className="absolute right-0 z-10 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-3 shadow-xl shadow-slate-200/70">
-                  <p className="px-2 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Messages</p>
-                  {messages.length === 0 ? (
-                    <p className="px-2 py-3 text-sm text-slate-500">Aucun message pour le moment.</p>
-                  ) : (
-                    <div className="max-h-80 space-y-2 overflow-y-auto">
-                      {messages.map((message) => (
-                        <div key={message.id} className="relative whitespace-pre-line rounded-xl bg-slate-50 p-3 pr-9 text-sm leading-6 text-slate-700">
-                          {message.content}
-                          <button
-                            type="button"
-                            aria-label="Supprimer le message"
-                            onClick={() => handleDeleteMessage(message.id)}
-                            className="absolute right-2 top-2 rounded-lg p-1 text-slate-400 transition hover:bg-red-100 hover:text-red-600"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div>
-              <span className="font-semibold text-slate-800">Amine</span>
-            </div>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 font-bold text-white">A</div>
+            <span className="font-semibold text-slate-800">Amine</span>
           </div>
         </header>
 
         <div className="space-y-6">
+          {/* Section Cartes rapides */}
           <section className="grid gap-5 md:grid-cols-2">
-            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-lime-100 text-lime-700"><UserRound size={22} /></div>
-              <div className="min-w-0">
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-lime-100 text-lime-700"><UserRound size={22} /></div>
+              <div>
                 <h2 className="text-lg font-bold">Profil sportif</h2>
                 <p className="text-sm text-slate-500">Consulter votre profil</p>
               </div>
-              <button type="button" onClick={() => navigate("/dashboardSportif/profil")} className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button>
+              <button onClick={() => navigate("/dashboardSportif/profil")} className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-lime-500 hover:text-slate-950">Voir</button>
             </div>
-            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 transition hover:-translate-y-1 hover:border-lime-300 hover:shadow-lg">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700"><Trophy size={22} /></div>
-              <div className="min-w-0">
+            <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-amber-700"><Trophy size={22} /></div>
+              <div>
                 <h2 className="text-lg font-bold">Résultats</h2>
                 <p className="text-sm text-slate-500">Consulter vos résultats</p>
               </div>
-              <button type="button" className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir</button>
+              <button className="ml-auto rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-lime-500 hover:text-slate-950">Voir</button>
             </div>
           </section>
 
-          <section className="relative min-h-[270px] overflow-hidden rounded-2xl bg-slate-950 p-7 text-white shadow-xl shadow-slate-300/50 sm:p-9">
-            <img src="https://images.unsplash.com/photo-1579952363873-27f3b0541f25?auto=format&fit=crop&w=1400&q=85" alt="Match de football" className="absolute inset-0 h-full w-full object-cover opacity-45" />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
-            <div className="relative max-w-xl">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Opportunités football</p>
-              <h2 className="text-3xl font-black sm:text-4xl">Trouvez votre prochaine équipe.</h2>
-              <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">Découvrez les offres sportives publiées par les clubs et faites avancer votre carrière.</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-lime-400 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-lime-300">Consulter les offres</button>
-              </div>
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+          {/* Section Offres */}
+          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><BriefcaseBusiness size={15} /> Recrutement</p>
-                <h2 className="mt-2 text-xl font-semibold text-slate-950">Offres récentes</h2>
-                <p className="mt-2 text-sm text-slate-500">Les dernières opportunités publiées par les clubs.</p>
+                <p className="flex items-center gap-2 text-sm font-semibold uppercase text-lime-600"><BriefcaseBusiness size={15} /> Recrutement</p>
+                <h2 className="mt-1 text-xl font-semibold text-slate-950">Offres récentes</h2>
               </div>
-              <button type="button" onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-lime-400 hover:text-slate-950">Voir toutes les offres</button>
+              <button onClick={() => navigate("/dashboardSportif/offres")} className="rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-lime-400 hover:text-slate-950">Voir tout</button>
             </div>
 
-            {loadingOffres ? (
-              <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Chargement des offres...</div>
+            {loading ? (
+              <p className="mt-5 text-sm text-slate-500">Chargement des offres...</p>
             ) : offres.length === 0 ? (
-              <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">Aucune offre disponible pour le moment.</div>
+              <p className="mt-5 text-sm text-slate-500">Aucune offre disponible pour le moment.</p>
             ) : (
               <div className="mt-5 grid gap-4 md:grid-cols-3">
                 {offres.slice(0, 3).map((offre) => (
-                  <article key={offre.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-lime-300 hover:bg-white hover:shadow-lg">
-                    <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-lime-600">
-                      Offre {offre.sport && <span className="rounded-full bg-lime-100 px-2 py-0.5 text-[11px] font-bold text-lime-700">{offre.sport}</span>}
-                    </p>
+                  <article key={offre.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-bold uppercase text-lime-600">{offre.sport}</p>
                     <h3 className="mt-2 text-base font-bold text-slate-900">{offre.title}</h3>
                     <p className="mt-1 flex items-center gap-2 text-xs text-slate-500"><CalendarDays size={13} /> {offre.date}</p>
                     <p className="mt-2 line-clamp-2 text-sm text-slate-600">{offre.description}</p>
@@ -251,26 +143,16 @@ export default function DashboardSportif() {
             )}
           </section>
 
-          <section className="flex flex-col justify-between gap-5 rounded-2xl bg-lime-400 p-7 text-slate-950 sm:flex-row sm:items-center">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-700">Réseau sportif</p>
-              <h2 className="mt-2 text-2xl font-black">Votre prochaine performance commence ici.</h2>
-              <p className="mt-2 max-w-xl text-sm text-slate-700">Construisez votre visibilité auprès des clubs et partenaires.</p>
-            </div>
-            <span className="hidden text-5xl font-black sm:block">SC</span>
-          </section>
-
+          {/* Section Candidatures */}
           <section className="flex flex-col justify-between gap-4 rounded-2xl border border-lime-200 bg-lime-50 p-5 sm:flex-row sm:items-center">
             <div>
-              <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-lime-700"><ClipboardList size={14} /> Candidatures</p>
+              <p className="flex items-center gap-2 text-xs font-bold uppercase text-lime-700"><ClipboardList size={14} /> Candidatures</p>
               <h2 className="mt-1 text-xl font-black">Réponses des administrateurs</h2>
-              <p className="mt-1 text-sm text-slate-600">Consultez le statut de chacune de vos demandes.</p>
             </div>
-            <button type="button" onClick={() => navigate('/dashboardSportif/candidatures')} className="rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-lime-500 hover:text-slate-950">Voir mes réponses</button>
+            <button onClick={() => navigate('/dashboardSportif/candidatures')} className="rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white hover:bg-lime-500 hover:text-slate-950">Voir mes réponses</button>
           </section>
         </div>
       </main>
     </div>
   );
 }
-

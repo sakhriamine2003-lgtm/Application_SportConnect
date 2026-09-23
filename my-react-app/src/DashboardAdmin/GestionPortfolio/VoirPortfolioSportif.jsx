@@ -11,8 +11,10 @@ export default function VoirPortfolioSportif() {
   const [portfolio, setPortfolio] = useState(null);
   const [error, setError] = useState("");
  
-  
+
   useEffect(() => {
+
+
     const token = localStorage.getItem("sport_connect_token");
 
     if (!token) {

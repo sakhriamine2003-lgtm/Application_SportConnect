@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 class CandidatureController extends Controller
 {
     public function store(Request $request, OffreRecrutement $offre)
-    {
+    {    //permet à un sportif de postuler à une offre de recrutement
         $sportif = $request->user();
 
         if (! $sportif->portfolio()->exists()) {
@@ -44,7 +44,7 @@ class CandidatureController extends Controller
 
 
     public function mine(Request $request)
-    {
+    {   //affiche les candidatures du sportif connecté
         return response()->json(
             Candidature::with('offreRecrutement')
                 ->where('user_id', $request->user()->id)
@@ -53,7 +53,7 @@ class CandidatureController extends Controller
         );
     }
 
-    public function index()
+    public function index()   //affiche toutes les candidatures pour les administrateurs
     {
         return response()->json(
             Candidature::with(['offreRecrutement', 'user.portfolio'])
@@ -63,7 +63,7 @@ class CandidatureController extends Controller
     }
 
     public function updateStatus(Request $request, Candidature $candidature)
-    {
+    { //met à jour le statut d'une candidature et envoie un message au sportif
         $validated = $request->validate([
             'status' => ['required', Rule::in(['accepted', 'rejected'])],
         ]);
