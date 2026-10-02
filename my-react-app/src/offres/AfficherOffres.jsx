@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, FilePenLine, FileText, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, BriefcaseBusiness, CalendarDays, Check, Clock3, FilePenLine, FileText, Plus, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-react';
 import api from '../axios/axios';
 
 const emptyForm = {
@@ -17,6 +17,8 @@ export default function AfficherOffres({ isAdmin = false }) {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [submitState, setSubmitState] = useState('');
+  const [candidatures, setCandidatures] = useState([]);
+  const [applicationState, setApplicationState] = useState('');
 
   const fetchOffres = async () => {
     try {
@@ -33,9 +35,58 @@ export default function AfficherOffres({ isAdmin = false }) {
     }
   };
 
+  const fetchCandidatures = async () => {
+    try {
+      const token = localStorage.getItem('sport_connect_token');
+      const response = await api.get(isAdmin ? '/candidatures' : '/mes-candidatures', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCandidatures(response.data || []);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible de charger les candidatures.');
+    }
+  };
+
   useEffect(() => {
     fetchOffres();
-  }, []);
+    fetchCandidatures();
+  }, [isAdmin]);
+
+  const handlePostuler = async (offreId) => {
+    setApplicationState('');
+
+    try {
+      const token = localStorage.getItem('sport_connect_token');
+      const response = await api.post(`/offres/${offreId}/candidatures`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setApplicationState(response.data?.message || 'Candidature envoyée.');
+      fetchCandidatures();
+    } catch (err) {
+      setApplicationState(err.response?.data?.message || 'Impossible d’envoyer votre candidature.');
+    }
+  };
+
+  const handleStatus = async (candidatureId, status) => {
+    try {
+      const token = localStorage.getItem('sport_connect_token');
+      await api.patch(`/candidatures/${candidatureId}`, { status }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchCandidatures();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible d’envoyer la réponse.');
+    }
+  };
+
+  const getApplication = (offreId) => candidatures.find((candidature) => candidature.offre_recrutement_id === offreId);
+
+  const statusLabel = {
+    pending: 'En attente',
+    accepted: 'Acceptée',
+    rejected: 'Refusée',
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -228,8 +279,58 @@ export default function AfficherOffres({ isAdmin = false }) {
                   </div>
                   <p className="mt-2 flex items-center gap-2 text-sm text-slate-500"><CalendarDays size={15} /> Date : {offre.date}</p>
                   <p className="mt-4 leading-7 text-slate-600">{offre.description}</p>
+
+                  {!isAdmin && (() => {
+                    const candidature = getApplication(offre.id);
+
+                    return candidature ? (
+                      <div className="mt-5 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+                        <Clock3 size={17} /> Réponse : {statusLabel[candidature.status] || candidature.status}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handlePostuler(offre.id)}
+                        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-lime-400 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-lime-300"
+                      >
+                        <FileText size={17} /> Postuler avec mon portfolio
+                      </button>
+                    );
+                  })()}
+
+                  {isAdmin && (
+                    <div className="mt-5 space-y-3 border-t border-slate-200 pt-4">
+                      <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Candidatures</p>
+                      {candidatures.filter((candidature) => candidature.offre_recrutement_id === offre.id).length === 0 ? (
+                        <p className="text-sm text-slate-500">Aucune candidature.</p>
+                      ) : candidatures.filter((candidature) => candidature.offre_recrutement_id === offre.id).map((candidature) => (
+                        <div key={candidature.id} className="rounded-xl border border-slate-200 bg-white p-3">
+                          <div className="flex items-center gap-3">
+                            <img src={candidature.user?.portfolio?.photo || 'https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=100&q=80'} alt="Profil du sportif" className="h-10 w-10 rounded-full object-cover" />
+                            <div className="min-w-0">
+                              <p className="font-bold text-slate-900">{candidature.user?.portfolio?.prenom} {candidature.user?.portfolio?.nom}</p>
+                              <p className="text-xs text-slate-500">{candidature.user?.portfolio?.sport || candidature.user?.email}</p>
+                            </div>
+                            <span className="ml-auto text-xs font-bold text-slate-500">{statusLabel[candidature.status] || candidature.status}</span>
+                          </div>
+                          {candidature.status === 'pending' && (
+                            <div className="mt-3 flex gap-2">
+                              <button type="button" onClick={() => handleStatus(candidature.id, 'accepted')} className="inline-flex items-center gap-1 rounded-lg bg-lime-100 px-3 py-2 text-xs font-bold text-lime-800 hover:bg-lime-200"><ThumbsUp size={14} /> Accepter</button>
+                              <button type="button" onClick={() => handleStatus(candidature.id, 'rejected')} className="inline-flex items-center gap-1 rounded-lg bg-red-100 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-200"><ThumbsDown size={14} /> Refuser</button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </article>
               ))}
+            </div>
+          )}
+
+          {applicationState && !isAdmin && (
+            <div className="mt-5 rounded-xl border border-lime-200 bg-lime-50 px-4 py-3 text-sm font-semibold text-lime-800">
+              {applicationState}
             </div>
           )}
         </div>
