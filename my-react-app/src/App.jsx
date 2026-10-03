@@ -12,6 +12,8 @@ import AfficherClub from './club/AfficherClub';
 import CreerClub from './club/CreerClub';
 import AfficherOffres from './offres/AfficherOffres';
 import CreerOffre from './offres/CreerOffre';
+import AfficherCandidatures from './candidatures/AfficherCandidatures';
+import MesCandidatures from './candidatures/MesCandidatures';
 
 function RoleRoute({ allowedRole, children }) {
   const role = String(localStorage.getItem('sport_connect_user_role') || '').trim().toLowerCase();
@@ -29,15 +31,17 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboardAdmin" element={<DashboardAdmin />} />
-        <Route path="/dashboardAdmin/clubs" element={<AfficherClub />} />
-        <Route path="/dashboardAdmin/clubs/ajouter" element={<CreerClub />} />
-        <Route path="/dashboardAdmin/offres" element={<AfficherOffres isAdmin />} />
+        <Route path="/dashboardAdmin" element={<RoleRoute allowedRole="admin"><DashboardAdmin /></RoleRoute>} />
+        <Route path="/dashboardAdmin/clubs" element={<RoleRoute allowedRole="admin"><AfficherClub /></RoleRoute>} />
+        <Route path="/dashboardAdmin/clubs/ajouter" element={<RoleRoute allowedRole="admin"><CreerClub /></RoleRoute>} />
+        <Route path="/dashboardAdmin/offres" element={<RoleRoute allowedRole="admin"><AfficherOffres isAdmin /></RoleRoute>} />
+        <Route path="/dashboardAdmin/candidatures" element={<RoleRoute allowedRole="admin"><AfficherCandidatures /></RoleRoute>} />
         <Route path="/dashboardSportif" element={<RoleRoute allowedRole="sportif"><DashboardSportif /></RoleRoute>} />
         <Route path="/dashboardSportif/profil" element={<RoleRoute allowedRole="sportif"><AffichageProfil /></RoleRoute>} />
         <Route path="/dashboardSportif/portfolio" element={<RoleRoute allowedRole="sportif"><AfficherPortfolio /></RoleRoute>} />
         <Route path="/dashboardSportif/Ajouterportfolio" element={<RoleRoute allowedRole="sportif"><CreeProfil /></RoleRoute>} />
         <Route path="/dashboardSportif/offres" element={<RoleRoute allowedRole="sportif"><AfficherOffres /></RoleRoute>} />
+        <Route path="/dashboardSportif/candidatures" element={<RoleRoute allowedRole="sportif"><MesCandidatures /></RoleRoute>} />
         <Route path="/dashboardSportif/offres/ajouter" element={<RoleRoute allowedRole="sportif"><CreerOffre /></RoleRoute>} />
       </Routes>
     </BrowserRouter>

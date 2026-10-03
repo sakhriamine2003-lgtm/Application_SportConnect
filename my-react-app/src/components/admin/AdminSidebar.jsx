@@ -1,6 +1,6 @@
 const ITEMS = ['Dashboard', 'Offres', 'Sportifs', 'Clubs', 'Candidatures', 'Statistiques'];
 
-export default function AdminSidebar({ activeItem, onLogout }) {
+export default function AdminSidebar({ activeItem, onNavigate, onLogout }) {
   return (
     <aside className="flex w-full shrink-0 flex-col bg-slate-950 px-4 py-5 text-slate-300 lg:min-h-screen lg:w-64">
       <div className="mb-10 flex items-center gap-3 px-2">

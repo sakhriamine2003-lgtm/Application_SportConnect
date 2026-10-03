@@ -3,66 +3,38 @@
 namespace App\Http\Controllers\DashboardSportif;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
+use App\Models\Portfolio;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 
 class PortfolioController extends Controller
 {
-    public function ajouterPortfolio(Request $request): JsonResponse
+    public function ajouterPortfolio(Request $request)
     {
-        try {
-            $photoRules = $request->hasFile('photo')
-                ? ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120']
-                : ['nullable', 'string', 'max:2048'];
+        // 1. Vérifier les données
+        $data = $request->validate([
+            'nom' => 'required|string',
+            'prenom' => 'required|string',
+            'age' => 'required|integer',
+            'sport' => 'required|string',
+            'niveau' => 'required|string',
+            'position' => 'required|string',
+            'equipe' => 'nullable|string',
+            'ville' => 'required|string',
+            'taille' => 'required|numeric',
+            'poids' => 'required|numeric',
+            'experience' => 'required|string',
+            'palmares' => 'required|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
 
-            $validatedData = $request->validate([
-                'nom' => ['required', 'string', 'max:255'],
-                'prenom' => ['required', 'string', 'max:255'],
-                'age' => ['required', 'integer', 'min:1', 'max:120'],
-                'sport' => ['required', 'string', 'max:255'],
-                'niveau' => ['required', 'string', 'max:255'],
-                'position' => ['required', 'string', 'max:255'],
-                'equipe' => ['nullable', 'string', 'max:255'],
-                'ville' => ['required', 'string', 'max:255'],
-                'taille' => ['required', 'numeric', 'min:0'],
-                'poids' => ['required', 'numeric', 'min:0'],
-                'experience' => ['required', 'string'],
-                'palmares' => ['required', 'string'],
-                'photo' => $photoRules,
-            ]);
+        $data['user_id'] = $request->user()->id;
+        Portfolio::where('user_id', $data['user_id'])->delete();
 
-            $user = $request->user();
+        $portfolio = Portfolio::create($data);
 
-            if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('portfolios', 'public');
-                $validatedData['photo'] = url('/storage/'.$path);
-            }
-
-            $oldPhoto = $user->portfolio?->photo;
-            $portfolio = $user->portfolio()->updateOrCreate([], $validatedData);
-
-            if ($request->hasFile('photo') && $oldPhoto) {
-                $oldPath = parse_url($oldPhoto, PHP_URL_PATH);
-                $oldPath = is_string($oldPath) ? ltrim(str_replace('/storage/', '', $oldPath), '/') : null;
-
-                if ($oldPath) {
-                    Storage::disk('public')->delete($oldPath);
-                }
-            }
-
-            return response()->json([
-                'message' => 'Portfolio enregistré avec succès.',
-                'data' => $portfolio,
-            ]);
-
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Erreur de validation.',
-                'errors' => $e->errors(),
-            ], 422);
-
-        }
+        return response()->json([
+            'message' => 'Portfolio créé avec succès',
+            'data' => $portfolio
+        ]);
     }
 }

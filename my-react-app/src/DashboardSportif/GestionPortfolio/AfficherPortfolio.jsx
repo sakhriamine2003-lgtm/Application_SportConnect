@@ -28,12 +28,18 @@ export default function AfficherPortfolio() {
       }
     })
 
+
+
+
+
     // Si succès
     .then((response) => {
       setPortfolio(response.data);
     })
 
     // Si erreur
+
+    
     .catch((error) => {
       console.log(error);
       setError(error.response?.data?.message || "Impossible de charger le portfolio.");

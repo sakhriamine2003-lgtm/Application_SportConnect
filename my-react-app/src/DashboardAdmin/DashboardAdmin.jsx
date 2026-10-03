@@ -22,6 +22,17 @@ export default function DashboardAdmin() {
     }
   };
 
+  const handleNavigation = (item) => {
+    setActiveItem(item);
+    const paths = {
+      Dashboard: '/dashboardAdmin',
+      Offres: '/dashboardAdmin/offres',
+      Clubs: '/dashboardAdmin/clubs',
+      Candidatures: '/dashboardAdmin/candidatures',
+    };
+    if (paths[item]) navigate(paths[item]);
+  };
+
   useEffect(() => {
     const fetchSportifs = async () => {
       try {
@@ -43,7 +54,7 @@ export default function DashboardAdmin() {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-900 lg:flex">
-      <AdminSidebar activeItem={activeItem} onNavigate={setActiveItem} onLogout={handleLogout} />
+      <AdminSidebar activeItem={activeItem} onNavigate={handleNavigation} onLogout={handleLogout} />
 
       <main className="min-w-0 flex-1 px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
         <header className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -61,6 +72,17 @@ export default function DashboardAdmin() {
           <img src="https://images.unsplash.com/photo-1518600506278-4e8ef466b810?auto=format&fit=crop&w=1400&q=85" alt="Terrain de football éclairé" className="absolute inset-0 h-full w-full object-cover opacity-35" />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20" />
           <div className="relative max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Pilotage sportif</p><h2 className="mt-2 text-2xl font-black sm:text-3xl">Toute votre activité, au même endroit.</h2><p className="mt-2 text-sm leading-6 text-slate-300">Suivez les clubs, les sportifs et les opportunités de recrutement de votre plateforme.</p></div>
+        </section>
+
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.2em] text-lime-600"><span className="text-xs font-black">CA</span> Recrutement</p>
+              <h2 className="mt-2 text-xl font-semibold text-slate-950">Candidatures des sportifs</h2>
+              <p className="mt-2 text-sm text-slate-500">Consultez les demandes reçues et acceptez ou refusez chaque candidature.</p>
+            </div>
+            <button type="button" onClick={() => navigate('/dashboardAdmin/candidatures')} className="rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-lime-400 hover:text-slate-950">Voir les candidatures</button>
+          </div>
         </section>
 
         {activeItem !== 'Dashboard' && activeItem !== 'Déconnexion' && (
